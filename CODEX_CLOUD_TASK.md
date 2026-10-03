@@ -13,6 +13,20 @@ The experiment asks whether a software-engineering strategy G0 can produce a suc
 - If the environment cannot execute the real provider path, report `BLOCKED` with the exact missing prerequisite instead of substituting demo results.
 - A successful G0→G1→G2 result on `real_v1` is exploratory evidence only, not proof of general RSI.
 
+## Cloud workspace bootstrap
+This repository transports the complete v0.3.1 source bundle in verified chunks so it can be restored without weakening hidden-test isolation.
+
+Before preflight, run:
+
+```bash
+python3 bootstrap_cloud.py
+```
+
+The bootstrap MUST finish with the expected ZIP SHA-256:
+`c81bc215b9ae5f43ebbe572a7e2f428bc91d30eb8d5c2b01208149e966463f61`
+
+If either transport or ZIP hash fails, stop and report `BLOCKED`. Do not continue with a partial tree.
+
 ## Preflight
 From repository root run:
 ```bash
