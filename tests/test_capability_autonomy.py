@@ -9,7 +9,7 @@ import time
 from types import SimpleNamespace
 import unittest
 
-from ascendra.capability_autonomy import copy_public_project, run_autonomous, _history_context
+from ascendra.capability_autonomy import copy_public_project, run_autonomous, _history_context, _allocate_worker_steps
 from ascendra.v4_ledger import FileLedger
 
 
@@ -178,6 +178,33 @@ class AutonomyTests(unittest.TestCase):
         self.assertEqual([len(item['findings']) for item in context], [32,32,32])
         self.assertEqual(context[-1]['findings'][-1]['agent'], '3-31')
         self.assertLess(len(json.dumps(context)), 60000)
+
+    def test_fifty_agent_limit_accepted_and_capacity_offered(self):
+        class CapacityDecider(DoneDecider):
+            def __call__(self, request, schema):
+                if request['capacity'] != 50 or request['worker_steps_limit'] != 8:
+                    raise AssertionError('Fifty workers were not offered')
+                return super().__call__(request, schema)
+        result=run_autonomous(self.args(max_agents=50, max_calls=60, max_steps=8),
+                              decider_factory=CapacityDecider, poll_interval=.01)
+        self.assertEqual(result['state'], 'completed')
+        self.assertEqual(result['max_agents'], 50)
+        with self.assertRaises(ValueError):
+            run_autonomous(self.args(max_agents=51, output=str(self.root/'invalid')))
+
+    def test_team_allocation_never_overdraws_global_call_budget(self):
+        for total_calls in (2, 9, 32, 60, 101):
+            for workers in range(1, min(50, total_calls-1)+1):
+                for maximum_steps in (1, 8, 32):
+                    steps=_allocate_worker_steps(total_calls-1, workers, maximum_steps)
+                    self.assertGreaterEqual(steps, 1)
+                    self.assertLessEqual(steps, maximum_steps)
+                    self.assertLessEqual(1+workers*steps, total_calls)
+        self.assertEqual(_allocate_worker_steps(59, 50, 8), 1)
+        self.assertEqual(_allocate_worker_steps(59, 4, 8), 8)
+        for available, workers in ((49,50), (60,51), (60,0)):
+            with self.assertRaises(ValueError):
+                _allocate_worker_steps(available,workers,8)
 
     def test_output_and_write_scope_rejected_before_start(self):
         with self.assertRaises(ValueError):

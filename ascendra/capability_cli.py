@@ -362,7 +362,7 @@ def main(argv=None):
     autonomous.add_argument('--output',required=True)
     autonomous.add_argument('--mission',default='Inspect this Python project and choose useful feasible improvements and learning goals.')
     autonomous.add_argument('--allow-write',action='append',default=[])
-    autonomous.add_argument('--max-agents',type=int,default=4,choices=range(1,17))
+    autonomous.add_argument('--max-agents',type=int,default=4,choices=range(1,51),metavar='1..50')
     autonomous.add_argument('--max-calls',type=int,default=60,choices=range(1,10001),metavar='1..10000')
     autonomous.add_argument('--minutes',type=_minutes,default=30)
     autonomous.add_argument('--max-steps',type=int,default=8,choices=range(1,33))

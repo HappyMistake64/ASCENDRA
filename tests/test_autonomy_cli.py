@@ -38,8 +38,15 @@ class AutonomousCLITests(unittest.TestCase):
         self.assertEqual((args.max_agents,args.max_calls,args.minutes,args.max_steps),(3,17,.5,2))
         self.assertEqual(args.mission,'Investigate independently')
 
+    def test_fifty_agent_limit_is_supported(self):
+        runtime = ModuleType('ascendra.capability_autonomy')
+        runtime.run_autonomous = Mock()
+        with patch.dict('sys.modules', {'ascendra.capability_autonomy':runtime}):
+            self.invoke('autonomous','--project','/project','--output','/output','--max-agents','50')
+        self.assertEqual(runtime.run_autonomous.call_args.args[0].max_agents, 50)
+
     def test_invalid_budgets_fail_before_runtime_import(self):
-        for option,value in (('--max-agents','0'),('--max-agents','17'),('--max-calls','0'),
+        for option,value in (('--max-agents','0'),('--max-agents','51'),('--max-calls','0'),
                              ('--minutes','0'),('--minutes','nan'),('--minutes','inf'),
                              ('--max-steps','33')):
             with self.subTest(option=option,value=value), redirect_stderr(io.StringIO()):
