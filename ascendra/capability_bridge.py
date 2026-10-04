@@ -146,7 +146,7 @@ def snapshot(root, *, token=''):
         if 'tasks' in event:
             item['tasks'] = [_task(task, token) for task in event['tasks'][:50]]
         events.append(item)
-    rounds, changes = [], []
+    rounds, changes, findings = [], [], []
     directories = sorted(path for path in root.iterdir() if _ROUND.fullmatch(path.name))[-50:]
     for directory in directories:
         _path(root, directory.name)
@@ -159,11 +159,24 @@ def snapshot(root, *, token=''):
             if not _WORKER.fullmatch(worker.name):
                 continue
             result = _json(root, directory.name+'/'+worker.name+'/result.json')
+            agent_id = 'r'+str(int(directory.name.split('-')[1]))+'-w'+str(int(worker.name.split('-')[1]))
+            if result:
+                evidence = result.get('findings', {})
+                evidence = evidence if isinstance(evidence, dict) else {}
+                task = result.get('task', {})
+                task = task if isinstance(task, dict) else {}
+                summary = result.get('summary', {})
+                summary = summary if isinstance(summary, dict) else {}
+                findings.append(dict(agent=agent_id, round=int(directory.name.split('-')[1]),
+                    title=_text(task.get('title'), 200, token),
+                    state=_text(result.get('state'), 80, token),
+                    stop_reason=_text(summary.get('stop_reason'), 100, token),
+                    finish_message=_text(evidence.get('finish_message'), 4000, token)))
             for change in result.get('changes', [])[:64]:
                 relative = change.get('path', '')
                 if not isinstance(relative, str) or relative.startswith(('/', '\\')) or '..' in relative.split('/'):
                     continue
-                changes.append(dict(agent='r'+str(int(directory.name.split('-')[1]))+'-w'+str(int(worker.name.split('-')[1])),
+                changes.append(dict(agent=agent_id,
                     path=_text(relative, 300, token),
                     **{key: change.get(key) if isinstance(change.get(key), str) and _HASH.fullmatch(change[key]) else None
                        for key in ('before_sha256', 'after_sha256')}))
@@ -180,11 +193,11 @@ def snapshot(root, *, token=''):
                 status=_text(value['status'], 80, token),
                 description=_text(value['spec'].get('description'), 1000, token)))
     result = dict(run_id=run_id, observed_at=time.time(), status=status, agents=agents,
-        events=events[-50:], rounds=rounds, capabilities=capabilities, changes=changes[-200:],
+        events=events[-50:], rounds=rounds, capabilities=capabilities, changes=changes[-200:], findings=findings[-100:],
         limits={key: _number(config.get(key)) for key in ('max_agents', 'max_calls', 'max_steps', 'minutes')})
     # Bound by encoded bytes, not character count (Czech and other Unicode count).
     while len(json.dumps(result, ensure_ascii=False).encode()) > MAX_BYTES:
-        candidates = [key for key in ('rounds', 'events', 'changes', 'capabilities') if result[key]]
+        candidates = [key for key in ('rounds', 'events', 'changes', 'capabilities', 'findings') if result[key]]
         if not candidates:
             raise ValueError('Dashboard snapshot exceeds the size limit')
         largest = max(candidates, key=lambda key: len(json.dumps(result[key]).encode()))

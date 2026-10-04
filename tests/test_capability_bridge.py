@@ -76,6 +76,22 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(len(payload['rounds'][0]['tasks']),50)
         self.assertEqual(len(payload['events'][0]['tasks']),50)
 
+    def test_worker_conclusions_are_bounded_and_sanitized_without_raw_evidence(self):
+        self.write('round-002/worker-03/result.json', dict(state='completed',
+            task={'title':'Checked memory'}, summary={'stop_reason':'finished'},
+            findings={'finish_message':'Verified behavior in /workspace/private/code.py; '
+                'private-credential; token=hidden. '+('x'*5000),
+                'steps':[{'raw_prompt':'private raw source'}]}))
+        findings=bridge.snapshot(self.root,token='private-credential')['findings']
+        self.assertEqual(len(findings),1)
+        finding=findings[0]
+        self.assertEqual({key:finding[key] for key in ('agent','round','title','state','stop_reason')},
+            dict(agent='r2-w3',round=2,title='Checked memory',state='completed',stop_reason='finished'))
+        self.assertTrue(finding['finish_message'].startswith('Verified behavior'))
+        self.assertLessEqual(len(finding['finish_message']),4000)
+        for forbidden in ('/workspace/','private-credential','hidden','raw_prompt','private raw source'):
+            self.assertNotIn(forbidden,json.dumps(finding))
+
     def test_symlink_and_oversized_metadata_are_rejected(self):
         outside=Path(self.temporary.name)/'outside'
         outside.write_text('{"state":"secret"}')
