@@ -66,7 +66,7 @@ Obecný `grow` nemá nezávislého hodnotitele pro libovolný uživatelský cíl
 
 ## Autonomní tým a sledování běhu
 
-Režim `autonomous` přidává koordinátora, který podle mise a dosavadních výsledků sám vybírá další cíle, rozděluje práci a určuje počet souběžných pracovníků. Po jejich dokončení může naplánovat další kolo nebo běh ukončit. Počet pracovníků je jeho rozhodnutí do limitu `--max-agents`; výchozí limit jsou **4 pracovníci**, **60 modelových volání celkem**, **30 minut** a **8 kroků na pracovní úkol**. Plánování koordinátora se započítává do společného počtu volání. Jde o samostatné rozhodování v programu; tato funkce nedokládá vědomí, vlastní přání ani svobodnou vůli.
+Režim `autonomous` přidává koordinátora, který podle mise a dosavadních výsledků sám vybírá další cíle, rozděluje práci a určuje počet souběžných pracovníků. Po jejich dokončení může naplánovat další kolo nebo běh ukončit. Počet pracovníků je jeho rozhodnutí do limitu `--max-agents`; výchozí limit jsou **4 pracovníci**, **60 modelových volání celkem**, **30 minut** a **nejvýše 8 kroků na pracovní úkol**. Limit `--max-agents` lze nastavit až na **50**; model si sám zvolí potřebný počet. Plánování koordinátora se započítává do společného počtu volání. Zbývající rozpočet se rovnoměrně rozdělí mezi zvolené pracovníky, nejvýše do limitu `--max-steps`. Při 60 voláních celkem dostane tým 50 pracovníků po prvním plánování pouze jeden krok na pracovníka; menší tým může zkoumat úlohy do větší hloubky. Jde o samostatné rozhodování v programu; tato funkce nedokládá vědomí, vlastní přání ani svobodnou vůli.
 
 Spuštění z terminálu pracovního prostředí:
 
@@ -98,6 +98,12 @@ Příkaz vytvoří značku `STOP`; řídicí proces ji zpracuje a aktualizuje st
 Pracovníci sdílejí paměť v `output/memory`; pozdější rozhodnutí mohou použít dříve ověřené postupy. Každá pracovní kopie přesto začíná z původního snímku projektu, takže změny jiného pracovníka nepřebírá automaticky.
 
 Výstupy pracovníků a projektové testy jsou pozorování. Samostatně ověřené schopnosti mají vlastní evidenci; obecný úspěch zvolené mise zůstává bez nezávislého hodnotitele neověřený. Koordinátor dostává výsledky pro další plánování, ale tvrzení pracovníka o úspěchu se tím nemění na důkaz správnosti. Počet `completed_tasks` označuje dokončené epizody pracovníků, nikoli nezávisle prokázané splnění cílů.
+
+## Soukromý živý dashboard
+
+Volitelný modul `python -m ascendra.capability_bridge --output /cesta/k/behu --site-origin https://vas-site.chatgpt.site --token-stdin` posílá do soukromého Sites dashboardu omezený přehled jednou za pět sekund. Přístupový token přijímá jedním JSON řádkem standardního vstupu (`token`) nebo z proměnné `ASCENDRA_SITES_TOKEN`; token nepatří do zdrojů, příkazových argumentů ani logu. Při použití terminálu musí být vypnuté echo vstupu.
+
+Přenos obsahuje stav, úkoly, rozhodnutí, známou spotřebu, názvy schopností a změněných souborů. Nepřenáší celé zdroje ani interní záznamy poskytovatele. Dashboard může vyžádat pouze zastavení konkrétního běhu; potvrzení musí obsahovat odpovídající identifikátor. Nezpřístupňuje shell ani obecné vzdálené příkazy. Po odeslání konečného stavu bridge skončí. Bez aktivního pracovního prostředí nebo spojení dashboard zobrazuje poslední přijatá data, nikoli živý běh.
 
 ## Návrh, ověření a použití schopnosti
 
