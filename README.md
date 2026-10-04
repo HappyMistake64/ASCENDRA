@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/HappyMistake64/ASCENDRA/actions/workflows/ci.yml/badge.svg)](https://github.com/HappyMistake64/ASCENDRA/actions/workflows/ci.yml)
 
-ASCENDRA is an experimental Python agent that selects tools, remembers outcomes, proposes reusable capabilities, and maintains a persistent plan of ambitions. Capabilities become callable only after independent contract verification. User goals, tool permissions and execution budgets remain authoritative.
+ASCENDRA is an experimental Python agent that selects tools, remembers outcomes, proposes reusable capabilities, and maintains a persistent plan of ambitions. Its autonomous supervisor can choose subtasks and the number of concurrent workers within a run budget. Capabilities become callable only after independent contract verification. User goals, tool permissions and execution budgets remain authoritative.
 
 Learning uses experience and reusable workflows; model weights do not change. The original controlled evolution and benchmark research modules remain available alongside the agent.
 
@@ -46,6 +46,23 @@ ascendra-agent status --memory /absolute/path/to/ascendra-memory
 
 Memory must be outside the inspected project. Only exact paths supplied with `--allow-write` can be changed. Without `--goal`, the agent chooses a next objective from its mission, ambition plan and recorded experience. Ambitions are enabled by default; `--no-ambition` disables them for a run. A generic project goal remains unverified unless the application provides a trusted evaluator.
 
+To let a supervisor choose work and delegate to concurrent agents:
+
+```bash
+ascendra-agent autonomous \
+  --project /absolute/path/to/project \
+  --output /absolute/path/to/new-autonomous-run \
+  --mission 'Find and investigate useful improvements to this project.' \
+  --max-agents 4 --max-calls 60 --minutes 30 \
+  --allow-write src/calculator.py
+
+# From another workspace terminal:
+ascendra-agent watch --output /absolute/path/to/new-autonomous-run
+ascendra-agent stop --output /absolute/path/to/new-autonomous-run
+```
+
+Each worker edits its own filtered copy. Workers share an experience journal, so later decisions can reuse independently verified workflows. Results and diffs are retained for review; they are not automatically merged into the original project. The supervisor chooses the team size up to the configured maximum and can finish early. This is software autonomy, not evidence of consciousness or free will. `watch` is a terminal command; it does not open a terminal inside ChatGPT.
+
 ## What is implemented
 
 - Five project tools: list, read, search, isolated unittest execution, and allowlisted atomic writes.
@@ -54,12 +71,13 @@ Memory must be outside the inspected project. Only exact paths supplied with `--
 - Three ambition horizons: now, next and stretch; progress uses evidence assigned to each milestone.
 - Smaller diagnostic steps after failures, bounded attempts and explicit waiting when evidence is missing.
 - Durable accounting for model calls and reported tokens. Unknown costs are not treated as zero.
+- Concurrent workers, model-selected delegation, durable run status and a stop control.
 
 ## Evidence and limits
 
 The latest local live demonstration used 15 model calls and 196,647 reported tokens. Both repairs passed five independent checks; an inspection workflow passed three fixture variants and was reused in the second project. Two ambition metrics were met; the broader repair-generalization ambition remains unverified. These small related projects demonstrate the complete mechanism, not general self-improvement or a measured increase in intelligence.
 
-Before publication, 229 framework tests passed. GitHub CI runs the complete current offline suite, including subsequent publishing checks. It does not make model calls or need model credentials. Actual experiment evidence remains in the execution workspace; the repository contains source, tests and public methodological documentation.
+GitHub CI runs the complete current offline suite, including process concurrency, cancellation and publishing checks. It does not make model calls or need model credentials. Actual experiment evidence remains in the execution workspace; the repository contains source, tests and public methodological documentation.
 
 The original `ascendra demo` command is synthetic. `ascendra-agent demo` is the real subscription-backed agent demonstration; neither should be confused with a fresh controlled confirmation study.
 

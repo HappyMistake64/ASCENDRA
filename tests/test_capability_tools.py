@@ -63,6 +63,28 @@ class ProjectToolTests(unittest.TestCase):
         self.assertNotIn('link.txt', self.catalog.execute('list_files', {})['data']['files'])
         with self.assertRaises(ValueError): ToolCatalog(self.root, writable_paths=['../secret.txt'])
 
+    def test_standard_credential_paths_are_excluded_from_tools_and_snapshots(self):
+        private_paths = ['.codex/config.toml', '.docker/config.json', '.kube/config',
+                         '.netrc', '.npmrc', '.pypirc', 'nested/.codex/config.toml']
+        for relative in private_paths:
+            path = self.root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('PRIVATE CREDENTIAL SENTINEL')
+        files = self.catalog.execute('list_files', {})['data']['files']
+        matches = self.catalog.execute('search_text', {'query': 'PRIVATE CREDENTIAL SENTINEL'})
+        self.assertEqual(matches['data']['matches'], [])
+        snapshot = Path(self.temporary.name) / 'snapshot'
+        snapshot.mkdir()
+        self.catalog._snapshot(snapshot)
+        for relative in private_paths:
+            with self.subTest(path=relative):
+                self.assertNotIn(relative, files)
+                self.assertEqual(self.catalog.execute('read_file', {'path': relative})['status'], 'error')
+                self.assertFalse((snapshot / relative).exists())
+                with self.assertRaises(ValueError):
+                    ToolCatalog(self.root, writable_paths=[relative])
+        self.assertEqual((snapshot / 'module.py').read_text(), 'VALUE = 7\n')
+
     def test_hard_links_are_not_accessible(self):
         external = Path(self.temporary.name) / 'shared.txt'
         external.write_text('HOST SECRET')
