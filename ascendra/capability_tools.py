@@ -22,7 +22,8 @@ MAX_SNAPSHOT_BYTES = 16 * 1024 * 1024
 MAX_FILES = 1000
 MAX_OUTPUT_BYTES = 128 * 1024
 _PRIVATE = {'.ascendra_hidden', '.ascendra', '.git', '.ssh', '.aws', '.azure',
-            '.config', '.credentials', 'credentials', 'secrets', 'node_modules',
+            '.config', '.codex', '.netrc', '.npmrc', '.pypirc', '.docker', '.kube',
+            '.credentials', 'credentials', 'secrets', 'node_modules',
             '__pycache__', '.venv', 'venv'}
 
 

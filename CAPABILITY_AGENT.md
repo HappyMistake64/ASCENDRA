@@ -64,6 +64,41 @@ python -m ascendra.capability_cli status \
 
 Obecný `grow` nemá nezávislého hodnotitele pro libovolný uživatelský cíl. Proto zůstává výsledek cíle **neověřený**, i když model skončí zprávou o úspěchu nebo některé veřejné testy projdou.
 
+## Autonomní tým a sledování běhu
+
+Režim `autonomous` přidává koordinátora, který podle mise a dosavadních výsledků sám vybírá další cíle, rozděluje práci a určuje počet souběžných pracovníků. Po jejich dokončení může naplánovat další kolo nebo běh ukončit. Počet pracovníků je jeho rozhodnutí do limitu `--max-agents`; výchozí limit jsou **4 pracovníci**, **60 modelových volání celkem**, **30 minut** a **8 kroků na pracovní úkol**. Plánování koordinátora se započítává do společného počtu volání. Jde o samostatné rozhodování v programu; tato funkce nedokládá vědomí, vlastní přání ani svobodnou vůli.
+
+Spuštění z terminálu pracovního prostředí:
+
+```bash
+ascendra-agent autonomous \
+  --project /absolute/path/to/project \
+  --output /absolute/path/to/autonomous-run \
+  --mission 'Prozkoumej projekt, vyber nejpřínosnější další cíle a rozděl práci podle potřeby.' \
+  --allow-write src/statistics.py \
+  --max-agents 4 --max-calls 60 --minutes 30
+```
+
+Výstupní adresář musí být nový a mimo zkoumaný projekt. Každý pracovník dostane vlastní filtrovanou pracovní kopii; povolené soubory mění pouze v ní. Původní projekt se během běhu nepřepisuje a výsledné změny se automaticky neslučují ani nepublikují. Bez `--allow-write` pracovníci pouze zkoumají projekt, testují a navrhují schopnosti. Rozpočet, oprávnění a možnost zastavení řídí hostitelská aplikace; model je nemůže sám navýšit nebo vypnout. Limit volání není cenový ani přesný tokenový strop.
+
+V druhém terminálu lze sledovat stav a poslední události:
+
+```bash
+ascendra-agent watch --output /absolute/path/to/autonomous-run
+```
+
+Jednorázový výpis poskytuje `watch --output ... --once`. `Ctrl+C` v příkazu `watch` ukončí pouze sledování. Zastavení samotného autonomního běhu se vyžádá samostatným příkazem:
+
+```bash
+ascendra-agent stop --output /absolute/path/to/autonomous-run
+```
+
+Příkaz vytvoří značku `STOP`; řídicí proces ji zpracuje a aktualizuje stav. Ověřte konečný stav příkazem `watch --once`. Soubor `status.json` obsahuje průběžný přehled, `events.jsonl` události a výstupní adresář uchovává podklady jednotlivých pracovníků. Terminálové příkazy se spouštějí v daném pracovním prostředí; samy neotevírají terminálové okno v chatu ani veřejné webové rozhraní.
+
+Pracovníci sdílejí paměť v `output/memory`; pozdější rozhodnutí mohou použít dříve ověřené postupy. Každá pracovní kopie přesto začíná z původního snímku projektu, takže změny jiného pracovníka nepřebírá automaticky.
+
+Výstupy pracovníků a projektové testy jsou pozorování. Samostatně ověřené schopnosti mají vlastní evidenci; obecný úspěch zvolené mise zůstává bez nezávislého hodnotitele neověřený. Koordinátor dostává výsledky pro další plánování, ale tvrzení pracovníka o úspěchu se tím nemění na důkaz správnosti. Počet `completed_tasks` označuje dokončené epizody pracovníků, nikoli nezávisle prokázané splnění cílů.
+
 ## Návrh, ověření a použití schopnosti
 
 1. Model navrhne popis, motivaci, kritéria úspěchu a posloupnost nejvýše 16 kroků ze známých nástrojů. Postup může mít vstupní schéma a používat parametry `$input.nazev`.
@@ -79,7 +114,7 @@ Současné kontrakty `python_test_diagnosis` a `python_project_inspection` ově�
 
 Katalog obsahuje `list_files`, `read_file`, `search_text`, `run_tests` a `write_file`. Neposkytuje libovolný shell, instalaci závislostí, síťový nástroj ani nasazování služeb. Testy běží systémovým Pythonem v samostatném sandboxu bez sítě nad filtrovanou kopií projektu pouze pro čtení. Omezení sítě se týká testovacího sandboxu; samotná komunikace s poskytovatelem modelu síť používá.
 
-Přístup k souborům je omezen na veřejné cesty projektu, se zákazem úniků přes relativní cesty a symlinky a s filtry soukromých cest. Zápisy musí odpovídat explicitně povoleným cestám. Postupy jsou deklarativní posloupnosti existujících nástrojů, nikoli nový spustitelný kód nebo rekurzivně vytvářené agenty.
+Přístup k souborům je omezen na veřejné cesty projektu, se zákazem úniků přes relativní cesty a symlinky a s filtry soukromých cest. Zápisy musí odpovídat explicitně povoleným cestám. Postupy jsou deklarativní posloupnosti existujících nástrojů. Souběžné pracovníky vytváří koordinátor režimu `autonomous`; pracovník nemůže tento limit obejít rekurzivním vytvářením dalších agentů.
 
 Paměť odděluje úspěch spuštění nástroje, ověřený výsledek cíle a dosud neověřené epizody. Pro další plánování poskytuje omezené souhrny výsledků, konkrétní chyby a dostupné schopnosti. Preference nástrojů vycházejí z pozorované úspěšnosti jejich spuštění; neprokazují jejich kauzální vliv na splnění cíle.
 
@@ -95,6 +130,7 @@ Záznamy se přidávají do atomicky ukládaného žurnálu s kontrolními souč
 | `ascendra/capability_memory.py` | Trvalé epizody, výsledky cílů, návrhy a evidence ověření. |
 | `ascendra/capability_evaluator.py` | Nezávislé kontrakty a kontrola skutečných výsledků postupů. |
 | `ascendra/capability_objective.py` | Nezávislé ověření výpočtu průměru v ukázce. |
-| `ascendra/capability_cli.py` | Příkazy `demo`, `grow` a `status`. |
+| `ascendra/capability_autonomy.py` | Autonomní koordinátor, souběžní pracovníci, rozpočet a průběžná evidence. |
+| `ascendra/capability_cli.py` | Příkazy `demo`, `grow`, `status`, `autonomous`, `watch` a `stop`. |
 
 Tato funkce představuje samostatný experimentální agentní režim. Není výsledkem potvrzovací studie zlepšení na nových úlohách a nemění historické výsledky ani zmrazené běhy V4/HARD.

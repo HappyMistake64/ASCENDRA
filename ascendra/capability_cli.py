@@ -2,7 +2,9 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
+import time
 import uuid
 
 from .capability_agent import CapabilityAgent
@@ -221,6 +223,121 @@ def grow(args):
     emit('grow_complete', output=str(output), usage=decide.ledger.summary())
 
 
+def _read_monitor_json(path, *, optional=False):
+    if optional and not path.exists():
+        return {}
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > 1_048_576:
+        raise ValueError(f'Invalid or oversized run metadata: {path}')
+    result = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(result, dict):
+        raise ValueError(f'Run metadata must be an object: {path}')
+    return result
+
+
+def _autonomous_output(output):
+    root = Path(output).resolve(strict=True)
+    marker = _read_monitor_json(root/'configuration.json')
+    if marker.get('mode') != 'autonomous':
+        raise ValueError('This directory is not an autonomous ASCENDRA run')
+    return root
+
+
+def _recent_events(path, count=5):
+    if not path.exists():
+        return []
+    if path.is_symlink() or not path.is_file():
+        raise ValueError('Invalid event log')
+    # Bound reads even for a long-running supervisor; ignore an incomplete last line.
+    with path.open('rb') as stream:
+        size = stream.seek(0, os.SEEK_END)
+        start = max(0, size-65536)
+        stream.seek(start)
+        lines = stream.read(65536).splitlines(keepends=True)
+    if start:
+        lines = lines[1:]
+    events = []
+    for line in lines:
+        if not line.endswith(b'\n'):
+            continue
+        try:
+            event = json.loads(line)
+        except (ValueError, UnicodeDecodeError):
+            continue
+        if isinstance(event, dict):
+            events.append(event)
+    return events[-count:]
+
+
+def _monitor_text(value, limit=200):
+    # Model-authored titles and errors must not inject terminal control sequences.
+    return ''.join(char if char.isprintable() else ' ' for char in str(value))[:limit]
+
+
+def _render_monitor(snapshot):
+    status = snapshot['status']
+    agents = status.get('agents', [])
+    usage = status.get('usage', {})
+    active = sum(agent.get('state') == 'running' for agent in agents)
+    lines = [f"ASCENDRA | {_monitor_text(status.get('state','starting'))} | round {status.get('round',0)}"
+             f" | active agents {active}/{status.get('max_agents','?')}"
+             f" | calls {usage.get('calls',0)}/{status.get('max_calls','?')}"
+             f" (reserved {status.get('reserved_calls',0)})"]
+    for agent in agents:
+        progress = agent.get('progress') or {}
+        title = (agent.get('task') or {}).get('title','')
+        activity = progress.get('tool') or progress.get('action') or progress.get('state') or ''
+        lines.append(f"  {_monitor_text(agent.get('id','?'))}: {_monitor_text(agent.get('state','?'))}"
+                     f" | {_monitor_text(title)} | step {_monitor_text(progress.get('step','?'))}"
+                     f" {_monitor_text(activity)}")
+    if status.get('error'):
+        lines.append('  Error: '+_monitor_text(status['error']))
+    for event in snapshot['recent_events'][-3:]:
+        detail = event.get('agent') or event.get('state') or event.get('rationale') or ''
+        lines.append('  Event: '+_monitor_text(event.get('event','?'))+' '+_monitor_text(detail))
+    return '\n'.join(lines)
+
+
+def watch(args):
+    root = _autonomous_output(args.output)
+    previous = None
+    try:
+        while True:
+            status = _read_monitor_json(root/'status.json', optional=True)
+            snapshot = dict(status=status or {'state':'starting'},
+                            recent_events=_recent_events(root/'events.jsonl'))
+            encoded = json.dumps(snapshot, ensure_ascii=False, indent=2) if args.once else _render_monitor(snapshot)
+            if encoded != previous:
+                print(encoded, flush=True)
+                previous = encoded
+            state = status.get('state', status.get('status'))
+            if args.once or state in ('completed','stopped','failed','finished','budget_exhausted','deadline'):
+                return
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print('\nMonitoring ended. The autonomous run continues; use the stop command to stop it.', flush=True)
+
+
+def stop(args):
+    root = _autonomous_output(args.output)
+    # Exclusive creation avoids following symlinks or opening existing pipes.
+    try:
+        descriptor = os.open(root/'STOP', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        if (root/'STOP').is_symlink() or not (root/'STOP').is_file():
+            raise ValueError('Invalid STOP marker')
+    else:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
+            stream.write('Stop requested by user.\n')
+    emit('stop_requested', output=str(root))
+
+
+def _minutes(value):
+    number = float(value)
+    if not 0 < number <= 1440:
+        raise argparse.ArgumentTypeError('minutes must be greater than zero and at most 1440')
+    return number
+
+
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     commands=parser.add_subparsers(dest='command',required=True)
@@ -240,9 +357,30 @@ def main(argv=None):
         command.add_argument('--max-steps',type=int,default=14,choices=range(1,33))
     status=commands.add_parser('status')
     status.add_argument('--memory',required=True)
+    autonomous=commands.add_parser('autonomous',help='Choose goals and coordinate parallel workers within a run budget')
+    autonomous.add_argument('--project',required=True)
+    autonomous.add_argument('--output',required=True)
+    autonomous.add_argument('--mission',default='Inspect this Python project and choose useful feasible improvements and learning goals.')
+    autonomous.add_argument('--allow-write',action='append',default=[])
+    autonomous.add_argument('--max-agents',type=int,default=4,choices=range(1,17))
+    autonomous.add_argument('--max-calls',type=int,default=60,choices=range(1,10001),metavar='1..10000')
+    autonomous.add_argument('--minutes',type=_minutes,default=30)
+    autonomous.add_argument('--max-steps',type=int,default=8,choices=range(1,33))
+    autonomous.add_argument('--model',default='gpt-6-astra')
+    autonomous.add_argument('--effort',default='low',choices=('low','medium','high','xhigh'))
+    monitor=commands.add_parser('watch',help='Follow an autonomous run; Ctrl+C stops monitoring only')
+    monitor.add_argument('--output',required=True)
+    monitor.add_argument('--once',action='store_true')
+    stopper=commands.add_parser('stop',help='Request an autonomous supervisor to stop')
+    stopper.add_argument('--output',required=True)
     args=parser.parse_args(argv)
     if args.command=='demo':demo(args)
     elif args.command=='grow':grow(args)
+    elif args.command=='autonomous':
+        from .capability_autonomy import run_autonomous
+        run_autonomous(args)
+    elif args.command=='watch':watch(args)
+    elif args.command=='stop':stop(args)
     else:
         store=ExperienceStore(args.memory)
         print(json.dumps(dict(context=store.context(),capabilities=store.list_capabilities(),
