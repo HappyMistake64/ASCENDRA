@@ -1,0 +1,528 @@
+{
+  "dataset_sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5",
+  "dataset_revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+  "scope": "Public statements and output contracts only; no private cases decoded or inspected for this review. This is eligibility review, not oracle validation.",
+  "historical_exclusion": "Every task registered in prior studies, including invalidated and incomplete studies, excluded from fresh candidate pool. V4 manifests also supported.",
+  "pilot_ids": [
+    "abc397_b",
+    "abc388_c",
+    "abc388_e",
+    "abc390_c",
+    "abc391_d",
+    "abc394_d",
+    "abc397_c",
+    "abc392_c",
+    "abc395_c",
+    "abc398_b",
+    "abc398_c",
+    "abc400_c"
+  ],
+  "pilot_previous_exposure": true,
+  "fresh_atcoder_tasks": 76,
+  "fresh_medium_hard_reviewed": 50,
+  "fresh_checker_eligible": 45,
+  "confirmation_ready": false,
+  "confirmation_blocker": "40 independently validated new diagnostic bundles have not been implemented; no confirmation tasks selected, materialized, or evaluated.",
+  "review": [
+    {
+      "task_id": "abc387_f",
+      "difficulty": "hard",
+      "title": "Count Arrays",
+      "public_statement_sha256": "12aef3e7c823ea1a343239090bf8d3da9e235f0862f122f0f4f81fc6ea0d8b69",
+      "checker_eligible": true,
+      "review_reason": "Count of valid assignments modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc388_g",
+      "difficulty": "hard",
+      "title": "Simultaneous Kagamimochi 2",
+      "public_statement_sha256": "32ad265e411a34acbbe866fbbc1866e747f70566201d36123124d8d9463b444b",
+      "checker_eligible": true,
+      "review_reason": "Maximum pair count for each interval query",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc388_f",
+      "difficulty": "hard",
+      "title": "Dangerous Sugoroku",
+      "public_statement_sha256": "d9936159a288f9f5b80ba2b7826bb0e446c6e9c10a6c052092074f6766a4b18c",
+      "checker_eligible": true,
+      "review_reason": "Yes/No reachability",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc389_d",
+      "difficulty": "medium",
+      "title": "Squares in Circle",
+      "public_statement_sha256": "33346cef11539ea809741d3b762f46804489cc4d34979e4521b3d503d02da43a",
+      "checker_eligible": true,
+      "review_reason": "Integer count of squares wholly inside circle",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc389_g",
+      "difficulty": "hard",
+      "title": "Odd Even Graph",
+      "public_statement_sha256": "2a086e77e6cad34c78a472f90782322336f942babb362e8b0c4e814d67b689a4",
+      "checker_eligible": true,
+      "review_reason": "Graph counts by edge count modulo P",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc389_f",
+      "difficulty": "hard",
+      "title": "Rated Range",
+      "public_statement_sha256": "83aa330721f2fffcbe766da248b1db0c395b91fb41866a81b9bbfe848743464b",
+      "checker_eligible": true,
+      "review_reason": "Final integer rating for each query",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc389_e",
+      "difficulty": "hard",
+      "title": "Square Price",
+      "public_statement_sha256": "0c36d16b5d333bcad5e1dbefe88f85abc7ce8afb7885386a3f220207c1b8ace1",
+      "checker_eligible": true,
+      "review_reason": "Maximum number of affordable units",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc390_g",
+      "difficulty": "hard",
+      "title": "Permutation Concatenation",
+      "public_statement_sha256": "08b423fe7111808d91bb823c9fb9afd6617b2f4ec61cafc0b4c4565758279c4c",
+      "checker_eligible": true,
+      "review_reason": "Sum of permutation concatenations modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc390_f",
+      "difficulty": "hard",
+      "title": "Double Sum 3",
+      "public_statement_sha256": "c99a4c2625d4d134d9d7fea9cd8a4b43ae1190feaa51d13201d1630d3ef5f606",
+      "checker_eligible": true,
+      "review_reason": "Sum of minimum erase operation counts",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc391_f",
+      "difficulty": "hard",
+      "title": "K",
+      "public_statement_sha256": "5e2335e7c72956299fa241e3b5162207b15ae1a397ed018e2427529b94f06b2b",
+      "checker_eligible": true,
+      "review_reason": "K-th largest integer expression value",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc391_e",
+      "difficulty": "hard",
+      "title": "Hierarchical Majority Vote",
+      "public_statement_sha256": "68e4a4d691faef3bcc80ef21d6c0c0b1681c30326433c5f883ee02d1ff5e4904",
+      "checker_eligible": true,
+      "review_reason": "Minimum number of changed bits",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc391_g",
+      "difficulty": "hard",
+      "title": "Many LCS",
+      "public_statement_sha256": "d6e751a276f75ed68542deac5f97abcd4ef56e33e632ac05d3e08e6b06b25e4c",
+      "checker_eligible": true,
+      "review_reason": "Counts by LCS length modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc392_d",
+      "difficulty": "medium",
+      "title": "Doubles",
+      "public_statement_sha256": "8d786c150cfb6b27fc2bf5f8b5d02990316449b6048bdc357ba2d6fad2ef0a3a",
+      "checker_eligible": false,
+      "review_reason": "Floating probability; exact Decimal comparison does not implement stated 1e-8 tolerance.",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc392_f",
+      "difficulty": "hard",
+      "title": "Insert",
+      "public_statement_sha256": "17c68281c092f60330a2a6b154ec8a873387f7853b5fa7d438c6238522f72827",
+      "checker_eligible": true,
+      "review_reason": "Uniquely specified final insertion array",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc393_f",
+      "difficulty": "hard",
+      "title": "Prefix LIS Query",
+      "public_statement_sha256": "b872ee65e956ce39f7b7027e5fbda450725d1c8ff8ebf038c67ef9dc4d1a0626",
+      "checker_eligible": true,
+      "review_reason": "Maximum increasing subsequence length per query",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc393_e",
+      "difficulty": "hard",
+      "title": "GCD of Subset",
+      "public_statement_sha256": "952f68981d77da7d584f225a0314a9d459fade8549a6835fbcf8536e7bf7a954",
+      "checker_eligible": true,
+      "review_reason": "Maximum possible GCD per element",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc393_d",
+      "difficulty": "hard",
+      "title": "Swap to Gather",
+      "public_statement_sha256": "67037ab617084bb72fc27f880ac83564e770477180280d713c10adc897d58934",
+      "checker_eligible": true,
+      "review_reason": "Minimum adjacent swap count",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc394_c",
+      "difficulty": "medium",
+      "title": "Debug",
+      "public_statement_sha256": "4fb1a08165e07581144fc4ad42dbf6087d7270847e24ba1688c632da05aa3339",
+      "checker_eligible": true,
+      "review_reason": "String from deterministic leftmost rewrite procedure",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc395_f",
+      "difficulty": "hard",
+      "title": "Smooth Occlusion",
+      "public_statement_sha256": "8f03a895a6f84ac433d45c2412680b40a812f7071d5f8d5cabd47e5916bd2bf9",
+      "checker_eligible": true,
+      "review_reason": "Minimum total grinding cost",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc395_e",
+      "difficulty": "hard",
+      "title": "Flip Edge",
+      "public_statement_sha256": "a901e1793486a77e4efae233b937916aac65c5a030b021db1e0cb8b6038c35de",
+      "checker_eligible": true,
+      "review_reason": "Minimum total graph traversal and reversal cost",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc396_g",
+      "difficulty": "hard",
+      "title": "Flip Row or Col",
+      "public_statement_sha256": "5b8910651bbd52b6cc6b368099750df0b89840812c3e32957014431814737cd8",
+      "checker_eligible": true,
+      "review_reason": "Minimum number of ones after row/column flips",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc396_c",
+      "difficulty": "medium",
+      "title": "Buy Balls",
+      "public_statement_sha256": "9a0ab76c36c0d794fabf578337e8a9fd7250dfacd307acba863e37022ee9137f",
+      "checker_eligible": true,
+      "review_reason": "Maximum allowed ball-value sum",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc396_f",
+      "difficulty": "hard",
+      "title": "Rotated Inversions",
+      "public_statement_sha256": "8427e2470b074d79d11207da099381369a01b4b63af1c5cd5f49f42ea989d07b",
+      "checker_eligible": true,
+      "review_reason": "Inversion counts for each rotation",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc396_d",
+      "difficulty": "medium",
+      "title": "Minimum XOR Path",
+      "public_statement_sha256": "7fc76dbcbc9b6a8a9d31a29abe9e15b4497a19f90adf17f5f5c83f9240cd71c6",
+      "checker_eligible": true,
+      "review_reason": "Minimum simple-path XOR value",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc397_f",
+      "difficulty": "hard",
+      "title": "Variety Split Hard",
+      "public_statement_sha256": "d3cf1f6f2bc96bc6842518228cea7c5f2e9c84aed67c01ca51d77112b04e1345",
+      "checker_eligible": true,
+      "review_reason": "Maximum sum of three distinct counts",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc397_e",
+      "difficulty": "hard",
+      "title": "Path Decomposition of a Tree",
+      "public_statement_sha256": "539e14c6204e686aa50e4ec5365230329c486c37ba6054ead347df8949dc4e83",
+      "checker_eligible": true,
+      "review_reason": "Yes/No existence of requested path partition",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc398_f",
+      "difficulty": "hard",
+      "title": "ABCBA",
+      "public_statement_sha256": "a05731549eb8af672926599c41a80315afe6c69156d00f368fc055796ab9f221",
+      "checker_eligible": false,
+      "review_reason": "Output contract explicitly permits multiple shortest palindrome solutions; exclude from exact-output study.",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc398_d",
+      "difficulty": "hard",
+      "title": "Bonfire",
+      "public_statement_sha256": "bccd5f3c3b36963294cd6cf770bc9a8bfb645233bb45189dcf5c8893aff341c7",
+      "checker_eligible": true,
+      "review_reason": "Deterministic binary smoke-presence sequence",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc399_d",
+      "difficulty": "medium",
+      "title": "Switch Seats",
+      "public_statement_sha256": "96ac6e4e6a7f7cd40b9942d963c18552e87181e0300b072791434082172be079",
+      "checker_eligible": true,
+      "review_reason": "Count of qualifying couple pairs per case",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc399_c",
+      "difficulty": "medium",
+      "title": "Make it Forest",
+      "public_statement_sha256": "369e64653d6262ba2049887f302ca820e5b98ff1b3bce25723d4f5edfd9524d9",
+      "checker_eligible": true,
+      "review_reason": "Minimum number of deleted edges",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc400_e",
+      "difficulty": "hard",
+      "title": "Ringo's Favorite Numbers 3",
+      "public_statement_sha256": "f95997cbf0db826a1a21542a6d03bcf12088bbf4beb33b4abdff99300d392717",
+      "checker_eligible": true,
+      "review_reason": "Largest qualifying integer per query",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "abc400_g",
+      "difficulty": "hard",
+      "title": "Patisserie ABC 3",
+      "public_statement_sha256": "0bdd255fbf788e363a192b176758d86715a4b99f997a65b41ac40ae5e18959aa",
+      "checker_eligible": true,
+      "review_reason": "Maximum total cake pairing price",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc190_c",
+      "difficulty": "hard",
+      "title": "Basic Grid Problem with Updates",
+      "public_statement_sha256": "450e11f7df3218790fc8dff5079643c763f5db4dfe8a606acc9198274e320836",
+      "checker_eligible": true,
+      "review_reason": "Sum of path products modulo 998244353 per update",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc190_a",
+      "difficulty": "hard",
+      "title": "Inside or Outside",
+      "public_statement_sha256": "9c4a3de79d885d21651389c5ce4e8fc6f33eb3d37fcf0d3aba5382cf50853e58",
+      "checker_eligible": false,
+      "review_reason": "Constructive optimal operation sequence; multiple outputs explicitly accepted.",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc190_d",
+      "difficulty": "hard",
+      "title": "Matrix Pow Sum",
+      "public_statement_sha256": "ac8b1aca71435e0f0c97f423b0c3c62cdd941959b599143e3b30d39a0a61042d",
+      "checker_eligible": true,
+      "review_reason": "Uniquely specified matrix sum modulo p",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc191_d",
+      "difficulty": "hard",
+      "title": "Moving Pieces on Graph",
+      "public_statement_sha256": "770a45536c350d034fd792189d4fe110f765dfb58b593f9ee0411624de179f71",
+      "checker_eligible": true,
+      "review_reason": "Minimum moves or -1",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc191_c",
+      "difficulty": "hard",
+      "title": "A^n",
+      "public_statement_sha256": "2427e7c9afcfa42ee50b98ad0e6eb13cd15b50ce9789d1b3948c971b4dee357a",
+      "checker_eligible": false,
+      "review_reason": "Constructive pair (A,M); multiple valid outputs explicitly accepted.",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc192_e",
+      "difficulty": "hard",
+      "title": "Snuke's Kyoto Trip",
+      "public_statement_sha256": "dd82895aba53b97529243a3e87f4697eb12f15f11d9a195d5de404196f513824",
+      "checker_eligible": true,
+      "review_reason": "Number of allowed paths modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc192_b",
+      "difficulty": "hard",
+      "title": "Fennec VS. Snuke 2",
+      "public_statement_sha256": "9a12e3b7554fc1835f5a81801f1fbe5b129f5155742ffa6c806e9b3013e42621",
+      "checker_eligible": false,
+      "review_reason": "Case-insensitive player-name checker; exact case-sensitive comparison is stricter.",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc192_d",
+      "difficulty": "hard",
+      "title": "Fraction Line",
+      "public_statement_sha256": "2475cc053a8d0460f928f6a44e379e7914247995bc05869b2559d5d1f989160c",
+      "checker_eligible": true,
+      "review_reason": "Sum of good-sequence scores modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc193_b",
+      "difficulty": "hard",
+      "title": "Broken Wheel",
+      "public_statement_sha256": "27cbaa2290cdb28ae105a8b620818be60a07560e0f78b518abb7f9454c1c5130",
+      "checker_eligible": true,
+      "review_reason": "Count of distinct indegree sequences modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc193_d",
+      "difficulty": "hard",
+      "title": "Magnets",
+      "public_statement_sha256": "5f7c6ec176175ce261ebb362c26870d7bcbbc362b62016f598d21671ea486849",
+      "checker_eligible": true,
+      "review_reason": "Minimum operations or -1 per case",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc194_c",
+      "difficulty": "hard",
+      "title": "Cost to Flip",
+      "public_statement_sha256": "b10b62e0375e9c8972f659e7094c4e9fd5b862eb649f9bbddcf990e7d5618401",
+      "checker_eligible": true,
+      "review_reason": "Minimum total bit-flip cost",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc194_a",
+      "difficulty": "medium",
+      "title": "Operations on a Stack",
+      "public_statement_sha256": "f9e53ce9e5399a95cc553a6a226e739c72f6e5fbe0e07a01e5309205fec37d2f",
+      "checker_eligible": true,
+      "review_reason": "Maximum possible final stack sum",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc194_d",
+      "difficulty": "hard",
+      "title": "Reverse Brackets",
+      "public_statement_sha256": "d3b76352d1649f3a5dab075e4b0d54e8c333f13fa06f0c5527b81ca53b72e548",
+      "checker_eligible": true,
+      "review_reason": "Count of distinct reachable strings modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc195_e",
+      "difficulty": "hard",
+      "title": "Random Tree Distance",
+      "public_statement_sha256": "58b30bb9c0dceaf3a04413f822444a089fe896c15be99a21938d41417dcede4a",
+      "checker_eligible": true,
+      "review_reason": "Sum of tree distances modulo 998244353 per query",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc195_b",
+      "difficulty": "hard",
+      "title": "Uniform Sum",
+      "public_statement_sha256": "1e41452198f4c71091aee362f138ba6e3b2571c1584a876f72bc98f8202d0edc",
+      "checker_eligible": true,
+      "review_reason": "Yes/No feasibility of equal nonnegative column sums",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc195_d",
+      "difficulty": "hard",
+      "title": "Swap and Erase",
+      "public_statement_sha256": "0b6b8787fa3391bb41be1f003f96dea220d8bec8e0462667835267ae77c5dffb",
+      "checker_eligible": true,
+      "review_reason": "Minimum operations to empty array per case",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc196_b",
+      "difficulty": "hard",
+      "title": "Torus Loop",
+      "public_statement_sha256": "ae5db13a0647a554cc374dc1aed09d1ccdbe6117bdfb34c143f98ff84d975a6d",
+      "checker_eligible": true,
+      "review_reason": "Number of valid tile configurations modulo 998244353",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    },
+    {
+      "task_id": "arc196_a",
+      "difficulty": "hard",
+      "title": "Adjacent Delete",
+      "public_statement_sha256": "e9cc4bbf4fe63b605523a4365cd74c30228f61cf95b2c3cdeb074b9739149d66",
+      "checker_eligible": true,
+      "review_reason": "Maximum adjacent-pair removal score",
+      "validated_bundle_available": false,
+      "selected_for_confirmation": false
+    }
+  ]
+}

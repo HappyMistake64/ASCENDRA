@@ -1,0 +1,18 @@
+{
+  "name": "real-v1-rotating-holdout",
+  "warning": "Model-backed benchmark. Hidden tests are excluded from provider context. Use repeated external runs before making research claims.",
+  "tasks": [
+    {"id":"slugify","description":"Fix slugify(text): lowercase, trim, collapse runs of non-alphanumeric characters to one hyphen, and remove edge hyphens.","split":"visible","test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"clamp","description":"Fix clamp(value, low, high). It must clamp inclusively and raise ValueError when low > high.","split":"visible","test_command":["python3",".ascendra_hidden/test.py"]},
+
+    {"id":"dedupe","description":"Fix dedupe(items) so it removes duplicates while preserving first-seen order and works for unhashable values such as lists.","split":"holdout","eval_group":1,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"chunks","description":"Fix chunks(items, size): return consecutive lists of at most size elements; reject size <= 0 with ValueError.","split":"holdout","eval_group":1,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"parse_bool","description":"Fix parse_bool(value): accept booleans and common case-insensitive strings true/false, yes/no, 1/0, on/off; otherwise raise ValueError.","split":"holdout","eval_group":1,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"safe_div","description":"Fix safe_div(a,b,default=None): return a/b, but when b is zero return default. Do not hide unrelated exceptions.","split":"holdout","eval_group":1,"test_command":["python3",".ascendra_hidden/test.py"]},
+
+    {"id":"median","description":"Fix median(values): support odd/even lengths without mutating the input; raise ValueError on empty input.","split":"holdout","eval_group":2,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"deep_get","description":"Fix deep_get(mapping,path,default=None): path is dot-separated; traverse dictionaries safely and return default when any segment is missing.","split":"holdout","eval_group":2,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"backoff","description":"Fix backoff(attempt,base=1.0,cap=60.0): exponential delay base*2**attempt capped at cap; reject negative attempt/base/cap with ValueError.","split":"holdout","eval_group":2,"test_command":["python3",".ascendra_hidden/test.py"]},
+    {"id":"merge_counts","description":"Fix merge_counts(*mappings): sum numeric values for matching keys without mutating inputs; missing keys count as zero.","split":"holdout","eval_group":2,"test_command":["python3",".ascendra_hidden/test.py"]}
+  ]
+}

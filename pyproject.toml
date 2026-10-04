@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "ascendra"
+version = "0.4.0"
+description = "Local-first measurable recursive agent improvement laboratory"
+requires-python = ">=3.11"
+[project.scripts]
+ascendra = "ascendra.cli:main"
+ascendra-agent = "ascendra.capability_cli:main"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ascendra*"]

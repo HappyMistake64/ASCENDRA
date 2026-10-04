@@ -1,0 +1,324 @@
+{
+  "tasks": [
+    {
+      "id": "HumanEval_72",
+      "upstream_id": "HumanEval/72",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_107",
+      "upstream_id": "HumanEval/107",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_114",
+      "upstream_id": "HumanEval/114",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_9",
+      "upstream_id": "HumanEval/9",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_105",
+      "upstream_id": "HumanEval/105",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_43",
+      "upstream_id": "HumanEval/43",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_155",
+      "upstream_id": "HumanEval/155",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_12",
+      "upstream_id": "HumanEval/12",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_48",
+      "upstream_id": "HumanEval/48",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_87",
+      "upstream_id": "HumanEval/87",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_108",
+      "upstream_id": "HumanEval/108",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_71",
+      "upstream_id": "HumanEval/71",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_144",
+      "upstream_id": "HumanEval/144",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_106",
+      "upstream_id": "HumanEval/106",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_82",
+      "upstream_id": "HumanEval/82",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_79",
+      "upstream_id": "HumanEval/79",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_93",
+      "upstream_id": "HumanEval/93",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_52",
+      "upstream_id": "HumanEval/52",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_103",
+      "upstream_id": "HumanEval/103",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    },
+    {
+      "id": "HumanEval_127",
+      "upstream_id": "HumanEval/127",
+      "description": "Complete the function according to the public task.py specification. Preserve its signature.",
+      "split": "holdout",
+      "eval_group": 1,
+      "timeout_s": 15,
+      "hidden_globs": [
+        ".ascendra_hidden/**"
+      ],
+      "test_command": [
+        "python3",
+        "-I",
+        "/task/.ascendra_hidden/check.py"
+      ]
+    }
+  ]
+}

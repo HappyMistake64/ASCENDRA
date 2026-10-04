@@ -1,0 +1,162 @@
+{
+  "excluded": {
+    "abc397_d": "Multiple valid ordered cube solutions; removed instead of applying exact-output grading."
+  },
+  "external_public_only_evidence": {
+    "graph_game": {
+      "path": "/workspace/ascendra-hard-game-review.json",
+      "sha256": "e11a991b72ff6f3e1dda36bb26c9bef1aec5c4091a14592c0ca7ce6ff165b949"
+    },
+    "graph_resource": {
+      "path": "/workspace/ascendra-hard-graphs-preflight.json",
+      "sha256": "aa78369fe6e1dd3baceebe7c7b356a43e6fbbf4780e4c249ca105e923b3b7da3"
+    },
+    "math_resource": {
+      "path": "/workspace/hard-math-resource-preflight.json",
+      "sha256": "af4bef157b373f24c314931f15604e18ecd6939c556b3471252b562d72aa9814"
+    }
+  },
+  "limitations": [
+    "Public tasks are deliberately exposed development material, not a fresh confirmation set.",
+    "Independent implementations can share mathematical state reductions, explicitly identified above.",
+    "Resource feasibility is established separately by sandbox preflights; witnesses need not be efficient on every legal input.",
+    "No benchmark candidate result or private case was used to set these diagnostics."
+  ],
+  "model_calls": 0,
+  "private_cases_accessed": false,
+  "records": [
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 14,
+      "independent_small_expected_answer_comparisons": 11,
+      "oracle_review": "Literal triple enumeration; large arithmetic progressions and single missing member use disjoint first/middle/last subtraction.",
+      "output_contract": "Unique integer triplet count",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc392_g"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 14,
+      "independent_small_expected_answer_comparisons": 10,
+      "oracle_review": "Literal contiguous interval sum powers; constant/alternating/single impulse large families checked algebraically.",
+      "output_contract": "Unique residue modulo 998244353",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc399_f"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 14,
+      "independent_small_expected_answer_comparisons": 10,
+      "oracle_review": "Weighted adjacent-transposition Dijkstra on small permutations; large reverse/rotations/disjoint swaps reviewed.",
+      "output_contract": "Unique minimum integer cost",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "arc194_b"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 16,
+      "independent_small_expected_answer_comparisons": 10,
+      "oracle_review": "Literal legal-operation state search; large adjacent-swap, frozen window, single-block and count/no-move certificates.",
+      "output_contract": "Fixed Yes/No decision",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "arc194_e"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 11,
+      "independent_small_expected_answer_comparisons": 7,
+      "oracle_review": "Literal palindrome word enumeration on generated N<=3 cases; pair-state distance bound reviewed. Large cycle/bipartite families also use general reference.",
+      "output_contract": "Unique shortest-path distance matrix",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc394_e"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 10,
+      "independent_small_expected_answer_comparisons": 6,
+      "oracle_review": "Literal building/floor shortest paths; maximal uniform/wall structures checked by connected region bottlenecks; arbitrary large grids rejected by reference.",
+      "output_contract": "Unique integer stair counts",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc394_g"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 13,
+      "independent_small_expected_answer_comparisons": 10,
+      "oracle_review": "Explicit doubled-state Bellman-Ford independent of heap traversal; reversal parity theorem shared and reviewed.",
+      "output_contract": "Unique minimum integer path cost",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc395_e"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 13,
+      "independent_small_expected_answer_comparisons": 9,
+      "oracle_review": "Exhaustive connected vertex subsets and degree requirements; maximum chain/star/alkane comb inputs checked.",
+      "output_contract": "Unique maximum vertex count or -1",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc394_f"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 17,
+      "independent_small_expected_answer_comparisons": 10,
+      "oracle_review": "Literal legal-move minimax; large formulas limited to connected, odd-order, or each-component-balanced graphs, each with invariant terminal parity.",
+      "output_contract": "Fixed Aoki/Takahashi winner; Aoki moves first",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc398_g"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 17,
+      "independent_small_expected_answer_comparisons": 11,
+      "oracle_review": "Enumerate exactly K edge indices, retaining parallel edges; large parallel-stage chains and all-edges-selected cases have direct certificates.",
+      "output_contract": "Unique maximum shortest-distance integer",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc397_g"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 18,
+      "independent_small_expected_answer_comparisons": 11,
+      "oracle_review": "Literal global-replacement BFS, including feeding branches into cycles; full-alphabet permutation and pure-cycle spare claims independently reviewed.",
+      "output_contract": "Unique minimum replacement count or -1",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc399_e"
+    },
+    {
+      "exact_output_eligible": true,
+      "generated_inputs_independently_validated": 16,
+      "independent_small_expected_answer_comparisons": 12,
+      "oracle_review": "Subset enumeration; large homogeneous groups, missing vitamin and exact-budget families reviewed.",
+      "output_contract": "Unique maximum minimum vitamin intake",
+      "public_contract_review": "PASS",
+      "scope": "Development diagnostics only; finite family coverage does not prove full-domain correctness.",
+      "task_id": "abc390_e"
+    }
+  ],
+  "review": "public-only independent hard diagnostic eligibility and oracle review",
+  "source_sha256": {
+    "ascendra/hard_checks_graphs.py": "59ff4fef91b2ede127f5d8c6a857fa6dc2398ef093920a37a1d3484523c9daf2",
+    "ascendra/hard_checks_math.py": "436f9b7da10b474d6ee710ba18d5e7666366a9e90e94e4ddc10dc87d63c26421",
+    "ascendra/hard_checks_mixed.py": "38ec73a79b016cade352f61818496697982557af5d8f107804a4b106df7d0612",
+    "ascendra/hard_validators.py": "1dc5140e89a5f5450b46aa0303b8cff34b4295442fb7b5addad430463f3c91ae",
+    "tests/fixtures/hard_public_tasks.json": "0482efc407ca9d97407ade75fcb4e198f356361deb7b0fdb3822520e40d7e2aa",
+    "tests/test_hard_review.py": "213b138dc89dccff75e5fad6ac52d759563a5908ad3ec7d8f4b8e2ae5fa6e1df"
+  },
+  "status": "PASS",
+  "task_count": 12,
+  "total_generated_inputs_validated": 173,
+  "total_independent_expected_answer_comparisons": 117
+}

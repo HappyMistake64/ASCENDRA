@@ -1,24 +1,18 @@
 #!/usr/bin/env python3
+"""Compatibility check: current sources are checked in, never restore old code."""
 from pathlib import Path
-import base64, hashlib, lzma, zipfile
 
-parts = [
-    Path(f"cloud_bundle/ascendra.zip.xz.b64.part{i}").read_text().strip()
-    for i in range(9)
-]
-xz = base64.b64decode("".join(parts))
-expected_xz = "ee71c95fb9afeef479222b4a2eaa0117284c95675d43a2589cc260354024c3e0"
-got_xz = hashlib.sha256(xz).hexdigest()
-if got_xz != expected_xz:
-    raise SystemExit(f"transport bundle sha256 mismatch: {got_xz}")
 
-raw = lzma.decompress(xz)
-expected_zip = "c81bc215b9ae5f43ebbe572a7e2f428bc91d30eb8d5c2b01208149e966463f61"
-got_zip = hashlib.sha256(raw).hexdigest()
-if got_zip != expected_zip:
-    raise SystemExit(f"zip sha256 mismatch: {got_zip}")
+def main():
+    root = Path(__file__).resolve().parent
+    required = ('pyproject.toml', 'ascendra/cli.py', 'ascendra/capability_cli.py',
+                'ascendra/capability_ambition.py', 'tests/test_capability_ambition_integration.py')
+    missing = [name for name in required if not (root / name).is_file()]
+    if missing:
+        raise SystemExit('Incomplete source checkout: ' + ', '.join(missing)
+                         + '. Restore the current Git revision; the historical archive is not used.')
+    print('Current ASCENDRA sources are present. Run bash scripts/setup.sh; no archive was extracted.')
 
-Path("ASCENDRA_v0.3.1_CLOUD_READY.zip").write_bytes(raw)
-with zipfile.ZipFile("ASCENDRA_v0.3.1_CLOUD_READY.zip") as z:
-    z.extractall(".")
-print("ASCENDRA cloud bundle restored", got_zip)
+
+if __name__ == '__main__':
+    main()

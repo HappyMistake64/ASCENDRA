@@ -1,0 +1,169 @@
+ASCENDRA — realizační plán z diskuse tří instancí Astra
+Datum: 2026-10-04 | Verze: návrh 1 | Stav: plán, implementace nezahájena
+
+CÍL A ROZSAH
+Zvýšit správnost řešení na nových úlohách při kontrolované spotřebě.
+Zlepšujeme systém ASCENDRA nad gpt-6-astra: diagnostiku, řízení opravy,
+výběr výsledku a způsob ověřování. Tento plán nemění váhy základního modelu.
+Výsledný postup má být lepší podle předem stanovených měřítek. Absolutně
+„nejlepší model“ ani úspěch příštího experimentu nelze předem garantovat.
+
+VÝCHOZÍ DŮKAZY
+Potvrzení V3: best_of_two 32/36, public_repair 31/36, 12 úloh × 3 opakování.
+Dosavadní výsledek: NO VERIFIED IMPROVEMENT. Veřejné ukázky samy nestačily.
+Syntetické zátěže odhalily slabinu při narušení rychlé algoritmické větve;
+jsou vývojovou diagnostikou, nikoli novým potvrzovacím důkazem.
+Diskuse: /workspace/ascendra-astra-debate-20261004T021353Z/debate.txt
+Výsledky: /workspace/ascendra-method-research-result/report.txt
+
+Tento experiment bude nový METHOD_RESEARCH_V4. Nepřepisuje původní
+CODEX_CLOUD_TASK.md, jeho konstanty, staré důkazy ani výsledky V1–V3.
+Jedno opakování na více nových úlohách je výslovně nová konfigurace;
+nenahrazuje tři opakování předepsaná původním rekurzivním experimentem.
+
+M1 — UZAMKNOUT ZADÁNÍ A MĚŘENÍ
+Závislost: žádná. Odpovědnost: implementátor a kontrola metodiky.
+Navázat na existující benchmark, sandbox, evidenci a statistiky.
+Vytvořit nový modul a protokol V4; historické skripty zachovat.
+Manifest bude obsahovat commit a hash pracovního diffu, model, reasoning=low,
+verze dat a kontrol, role dat, prompty, pořadí běhů, výběrové pravidlo,
+limity a bránu. Neznámou revizi backendu uvést jako neznámou.
+Oddělit náklady přípravy kontrol, řešení, oprav, hodnocení a infrastruktury.
+Finanční cenu bez zdroje uložit jako null/unknown, nikoli jako nulovou.
+Hotovo: manifest je strojově validovaný; změna konfigurace vyžaduje nový
+identifikátor experimentu; neúplný pár nemůže dostat úspěšný verdikt.
+
+M2 — OVĚŘIT KONTROLY PŘED GENEROVÁNÍM ŘEŠENÍ
+Závislost: M1. Odpovědnost: implementátor validátorů.
+Pro každou úlohu sestavit ze zadání veřejný balík: ukázky, malé případy
+s jednoduchým referenčním řešičem a platné mezní zátěže. Transformační
+vztahy používat pouze se zdůvodněním, které ověří nezávislá kontrola.
+Ověřit vstupní omezení, alternativní správné výstupy a záměrné chyby.
+Pro první V4 preferovat úlohy s jednoznačným výstupem; jiné přijmout pouze
+s ověřeným hodnotitelem vlastností. Shoda dvou LLM neověřuje referenci.
+Výkonnostní selhání reprodukovat při stejném limitu a prostředí; oprávněnost
+vstupu ověřit i tehdy, když pro měření času nepotřebujeme správný výstup.
+Známé syntetické případy a všechny dříve použité úlohy zůstávají ve vývoji.
+Hotovo: každý zařazený balík má hash, validační protokol a projde kontrolou
+správných i chybných programů. Neověřené balíky se nepoužijí pro zpětnou vazbu.
+
+M3 — DVĚ PŘESNĚ DEFINOVANÉ STRATEGIE
+Závislost: M2. Odpovědnost: implementátor runneru.
+A / baseline: dva nezávislé návrhy. Druhý nevidí první ani jeho výsledky.
+B / kandidát: první návrh; nejvýše jedna oprava po ověřeném selhání.
+Při průchodu kontrolami B končí. Při chybě diagnostiky vrací „nevyhodnoceno“.
+Obě strategie používají stejný veřejný balík, prostředí, první prompt
+a maximální rozpočet dvou kandidátních volání. Liší se pouze druhým krokem.
+Výběr: preferovat návrh, který projde celým balíkem; jinak vyšší podíl
+splněných kontrol s předem fixovanými váhami; při shodě první návrh.
+Chyba evaluátoru není nesplněná kontrola programu. Výběr nikdy nečte holdout.
+Toto pravidlo slouží výběru kandidáta, nikoli důkazu jeho správnosti.
+Hotovo: integrační scénáře pro průchod, chybný výstup, pomalý program,
+neúspěšnou opravu a chybný validátor ověří správné větvení a limity.
+
+M4 — SPOLEHLIVÉ SPUŠTĚNÍ A OBNOVA
+Závislost: M1, souběžně s M2–M3. Odpovědnost: implementátor infrastruktury.
+Rozšířit stávající store/subscription/sandbox místo nahrazování celého systému.
+Ukládat dokončené kroky a hashe úlohy, programu, kontrol a prostředí.
+Obnovovat pouze kompatibilní dokončené kroky. Každý fyzický call evidovat.
+Neznámý výsledek transportu označit jako nejistý; případný retry má nový
+pokus a může znamenat duplicitní náklad. Neslibovat přesně-jednou doručení.
+Nejvýše jeden infrastrukturní retry na krok v globálním limitu.
+Timeout vykonávání programu je jeho výsledek, nikoli důvod pro další call.
+Hotovo: simulovaný pád nezdvojí potvrzené výsledky, změněná konfigurace
+nepoužije starou cache, testy izolace chrání soukromá data.
+
+M5 — VÝVOJOVÝ PILOT A KONTROLA ROZLIŠOVACÍ SCHOPNOSTI
+Závislost: M2–M4. Odpovědnost: experimentátor.
+Použít 12 vývojových úloh a obě strategie: nejvýše 48 kandidátních callů.
+Změřit četnost spouštění oprav, skutečné opravy chyb, nové chyby, spotřebu
+a podíl neshod mezi strategiemi. Ladit pouze podle vývojových výsledků.
+Ověřit, zda kontroly zachytí známé chyby i narušení rychlých větví.
+Před potvrzením spočítat pravděpodobnost průchodu bránou pro realistické
+scénáře zisků/ztrát. Jde o simulaci síly měření, nikoli důkaz zlepšení.
+Hotovo: zmrazen jeden kandidát, výběrové pravidlo a všechny limity;
+celé framework testy a izolace procházejí. Nespouštět čtyři varianty
+na holdoutu a následně nevybírat vítěze podle potvrzovacích výsledků.
+
+M6 — JEDNORÁZOVÉ NEZÁVISLÉ POTVRZENÍ
+Závislost: M5 a kontrola protokolu před vystavením holdoutu.
+40 nových úloh, obě strategie, jeden párovaný běh na úlohu: nejvýše
+160 kandidátních callů. Pořadí randomizovat a seed uložit. Vyloučit všechny
+úlohy již registrované v předchozích studiích, včetně neúplných běhů.
+Nové znamená nepoužité v našem experimentu; nelze tím zaručit, že veřejnou
+úlohu základní model nikdy neviděl při tréninku.
+Veřejné kontroly připravit před kandidáty; soukromé hodnoticí testy zůstanou
+jen evaluátoru. Během potvrzení neměnit prompty ani politiku podle výsledků.
+Úlohy vybírat podle předem daných rodin a veřejných parametrů, ne podle
+toho, která metoda na nich vyhraje. Počet 40 není příslib dostatečné síly.
+Je-li podle M5 nutný větší vzorek, zaregistrovat předem jiný protokol a
+rozpočet; nepřidávat úlohy po nahlédnutí do výsledků, dokud nevyjde úspěch.
+
+BRÁNA KVALITY PRO V4
+Vyhodnotit až kompletní platnou sadu. Kandidát musí splnit současně:
+- rozdíl správnosti alespoň +5 procentních bodů;
+- žádnou pozorovanou regresi po úlohách;
+- jednostranný znaménkový test po úlohách p <= 0,05;
+- dolní Wilsonovu 95% mez podílu výher mezi neshodami > 0,5.
+Při 40 úlohách a nulových ztrátách nestačí dvě výhry, přestože dávají +5 bodů:
+pro tato statistická pravidla je potřeba alespoň pět výher.
+Bez neshod není důkaz zlepšení. Chybějící výsledek se nedopočítává jako úspěch.
+Další brána pro převzetí do provozu: poměr celkových známých tokenů kandidáta
+k baseline <= 1,20, včetně stejně přiděleného podílu tvorby kontrol;
+změřit také CPU a latenci. Tokeny nenahrazují finanční cenu. Neznámá cena
+znamená, že finanční úspora nebyla ověřena. Jde o explicitní pravidlo V4,
+nikoli tvrzení, že starý kód již vynucuje všechny položky z MASTERPLAN.md.
+Výstup: skóre, párované zisky/ztráty/shody, nejistota, regrese, náklady,
+chyby, verdikt a úplné artefakty. Nerozhodný výsledek zachová starou verzi.
+
+VÝCHOZÍ ROZPOČET V4 — STROPY, NIKOLI PŘEDPOVĚĎ SPOTŘEBY
+- 48 kandidátních callů pro pilot a 160 pro potvrzení.
+- Nejvýše 24 modelových callů pro přípravu kontrol, přednostně deterministicky.
+- Nejvýše 2 preflight cally a 8 infrastrukturních retry celkem.
+- Celkem nejvýše 242 fyzických callů, 3 000 000 hlášených tokenů a 6 hodin
+  automatického běhu. Inženýrská příprava a lidská kontrola se evidují zvlášť.
+- Před každým callem rezervovat jeho maximální tokenový rozpočet podle
+  skutečných možností poskytovatele; pokud nelze tvrdý strop vynutit,
+  uvést omezení a nepředstírat zaručenou horní mez.
+- Chybějící usage přiznat a rezervovat konzervativně; nikoli účtovat nulu.
+- Programové limity převzít z ověřeného prostředí V3 a zmrazit; timeout
+  modelového transportu vést odděleně. Konkrétní hodnoty patří do manifestu.
+- Při vyčerpání limitu uložit neúplný běh a skončit bez povýšení.
+
+ZASTAVOVACÍ PRAVIDLA
+Únik soukromých testů, vadný oracle ovlivňující kandidáta nebo framework
+regrese zastaví experiment. Dotčené důkazy se zachovají jako neplatné.
+Oprava dostane novou verzi; kontaminované potvrzovací úlohy se nepoužijí
+pro nový důkaz. Transportní chyby se řídí fixním retry limitem.
+Při neúspěchu není dovoleno změkčit bránu nebo skrýt zhoršené úlohy.
+
+M7 — REPLIKACE, PŘEVZETÍ A DALŠÍ GENERACE
+Závislost: platný přínos v M6. Rozpočet: samostatný budoucí protokol.
+Před nahrazením současného postupu zopakovat zmrazené porovnání na čerstvé
+sadě a následně na skutečných softwarových repozitářích odpovídajících
+zamýšlenému použití. Uchovat možnost návratu ke starému postupu.
+Teprve potom povolit vítěznému postupu navrhnout dalšího kandidáta.
+Nová generace dostane nový holdout a samostatnou bránu. Označení G0→G1→G2
+vyžaduje doložený původ kandidátů a obě nezávislá povýšení podle příslušného
+protokolu; lidsky navržená V4 sama tento rekurzivní výsledek nedokazuje.
+Další role agentů, delší reasoning a jiné modely zkoušet jednotlivě jako
+nové hypotézy. Fine-tuning otevřeného modelu je samostatný budoucí projekt
+s vlastními daty, tréninkovým rozpočtem a evaluací.
+
+PRVNÍ KONKRÉTNÍ DODÁVKA
+Implementovat M1–M4: protokol/manifest V4, ověřené kontrolní balíky,
+runner dvou politik a obnovu s účtováním. Přidat cílené testy nových
+kritických cest a spustit úplné framework testy. Teprve pak spustit pilot.
+Odhad práce stanovit po rozpisu těchto změn; zde není slib termínu.
+
+KONTROLNÍ SEZNAM
+[ ] M1 Manifest a předem daná pravidla
+[ ] M2 Ověřené kontrolní balíky
+[ ] M3 Dvě strategie a deterministický výběr
+[ ] M4 Checkpointy, izolace a úplná evidence
+[ ] M5 Pilot, posouzení síly měření, zmrazení
+[ ] M6 Čerstvé potvrzení a úplný report
+[ ] M7 Nezávislá replikace před převzetím
+
+Tento dokument je plán. Jeho vytvoření není implementace ani nový důkaz
+vyšší výkonnosti. Historické výsledky a současná vítězná verze se nemění.
