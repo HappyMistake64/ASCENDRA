@@ -1,0 +1,359 @@
+[
+  {
+    "task_id": "abc392_g",
+    "statement": "For integers A, B, C ( A < B < C ), if they satisfy B-A = C-B, then (A, B, C) is called a fine triplet.\nYou are given a set of N distinct positive integers S = \\{ S_1, S_2, \\dots, S_N \\}. Find the number of fine triplets (A, B, C) with A, B, C \\in S.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN\nS_1 S_2 \\dots S_N\n\nOutput\n\nPrint the number of fine triplets as an integer.\n\nConstraints\n\n\n- All input values are integers.\n- 1 \\le N \\le 10^6\n- 1 \\le S_i \\le 10^6\n- The elements of S are distinct.\n\nSample Input 1\n\n5\n8 3 1 5 2\n\nSample Output 1\n\n3\n\nHere, S = \\{8,3,1,5,2\\}.\nThe fine triplets to be counted are the following three:\n\n- (1,2,3)\n- (1,3,5)\n- (2,5,8)\n\nSample Input 2\n\n7\n300000 100000 499998 499999 200000 400000 500000\n\nSample Output 2\n\n5\n\nSample Input 3\n\n10\n13 1 16 15 12 4 7 10 2 19\n\nSample Output 3\n\n10",
+    "examples": [
+      {
+        "input": "5\n8 3 1 5 2",
+        "output": "3",
+        "testtype": "stdin"
+      },
+      {
+        "input": "7\n300000 100000 499998 499999 200000 400000 500000",
+        "output": "5",
+        "testtype": "stdin"
+      },
+      {
+        "input": "10\n13 1 16 15 12 4 7 10 2 19",
+        "output": "10",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Fine Triplets",
+    "platform": "atcoder",
+    "date": "2025-02-08T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc399_f",
+    "statement": "You are given positive integers N, K, and an integer sequence of length N: A = (A_1, A_2, \\dots, A_N).\nFind \\displaystyle \\sum_{1\\leq l\\leq r\\leq N} \\Bigg(\\sum_{l\\leq i\\leq r} A_i\\Bigg)^K, modulo 998244353.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN K\r\nA_1 A_2 \\dots A_N\n\nOutput\n\nPrint the answer.\n\nConstraints\n\n\n- 1\\leq N \\leq 2\\times 10^5\n- 1\\leq K \\leq 10\n- 0 \\leq A_i < 998244353\n- All input values are integers.\n\nSample Input 1\n\n3 2\r\n3 1 2\n\nSample Output 1\n\n75\r\n\nThe value is A_1^2+A_2^2+A_3^2+(A_1+A_2)^2+(A_2+A_3)^2+(A_1+A_2+A_3)^2=3^2+1^2+2^2+4^2+3^2+6^2=75.\n\nSample Input 2\n\n1 10\r\n0\n\nSample Output 2\n\n0\n\nSample Input 3\n\n10 5\r\n91 59 85 60 57 72 12 3 27 16\n\nSample Output 3\n\n428633385\r\n\nBe sure to find the sum modulo 998244353.",
+    "examples": [
+      {
+        "input": "3 2\n3 1 2",
+        "output": "75",
+        "testtype": "stdin"
+      },
+      {
+        "input": "1 10\n0",
+        "output": "0",
+        "testtype": "stdin"
+      },
+      {
+        "input": "10 5\n91 59 85 60 57 72 12 3 27 16",
+        "output": "428633385",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Range Power Sum",
+    "platform": "atcoder",
+    "date": "2025-03-29T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "arc194_b",
+    "statement": "You are given a permutation P = (P_1, P_2, \\ldots, P_N) of (1, 2, \\ldots, N). Takahashi can repeatedly perform the following operation on P (possibly zero times):\n\n- Choose an integer i satisfying 1 \\leq i \\leq N-1. Pay a cost of i, and swap P_i and P_{i+1}.\n\nFind the minimum total cost required to sort P in ascending order.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN\nP_1 P_2 \\ldots P_N\n\nOutput\n\nPrint the minimum total cost required to sort P in ascending order.\n\nConstraints\n\n\n- 2 \\leq N \\leq 2 \\times 10^5\n- (P_1, P_2, \\ldots, P_N) is a permutation of (1, 2, \\ldots, N).\n- All input values are integers.\n\nSample Input 1\n\n3\n3 2 1\n\nSample Output 1\n\n4\n\nTakahashi can sort P in ascending order as follows:\n\n- Pay a cost of 1 and swap P_1 = 3 and P_2 = 2. Now, P = (2, 3, 1).\n- Pay a cost of 2 and swap P_2 = 3 and P_3 = 1. Now, P = (2, 1, 3).\n- Pay a cost of 1 and swap P_1 = 2 and P_2 = 1. Now, P = (1, 2, 3).\n\nThe total cost for these operations is 4, which is the minimum possible.\n\nSample Input 2\n\n5\n2 4 1 3 5\n\nSample Output 2\n\n6\n\nSample Input 3\n\n2\n1 2\n\nSample Output 3\n\n0",
+    "examples": [
+      {
+        "input": "3\n3 2 1",
+        "output": "4",
+        "testtype": "stdin"
+      },
+      {
+        "input": "5\n2 4 1 3 5",
+        "output": "6",
+        "testtype": "stdin"
+      },
+      {
+        "input": "2\n1 2",
+        "output": "0",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Minimum Cost Sort",
+    "platform": "atcoder",
+    "date": "2025-03-09T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc394_e",
+    "statement": "We have a directed graph with N vertices, numbered 1, 2, \\ldots, N.\nInformation about the edges is given by N^2 characters C_{1, 1}, C_{1, 2}, \\ldots, C_{1, N}, C_{2, 1}, \\ldots, C_{N, N}. Here, each C_{i, j} is either a lowercase English letter or -.\nIf C_{i, j} is a lowercase English letter, then there is exactly one directed edge from vertex i to vertex j labeled C_{i, j}. If C_{i, j} is -, there is no edge from vertex i to vertex j.\nFor each integer pair (i, j) with 1 \\leq i, j \\leq N, answer the following question:\n\n- Among all (not necessarily simple) paths from vertex i to vertex j whose concatenation of labels on the edges forms a palindrome, what is the length of the shortest such path? If there is no such path, the answer is -1.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN\r\nC_{1, 1}C_{1, 2}\\ldotsC_{1, N}\r\nC_{2, 1}C_{2, 2}\\ldotsC_{2, N}\r\n\\vdots\r\nC_{N, 1}C_{N, 2}\\ldotsC_{N, N}\n\nOutput\n\nLet A_{i, j} be the answer to the question for the pair (i, j). Print them in the following format:\nA_{1, 1} A_{1, 2} \\ldots A_{1, N}\r\nA_{2, 1} A_{2, 2} \\ldots A_{2, N}\r\n\\vdots\r\nA_{N, 1} A_{N, 2} \\ldots A_{N, N}\n\nConstraints\n\n\n- 1 \\leq N \\leq 100\n- N is an integer.\n- Each C_{i, j} is either a lowercase English letter or -.\n\nSample Input 1\n\n4\r\nab--\r\n--b-\r\n---a\r\nc---\n\nSample Output 1\n\n0 1 2 4\r\n-1 0 1 -1\r\n3 -1 0 1\r\n1 -1 -1 0\r\n\nFor example, consider the case (i, j) = (1, 4).\r\nBy taking the path 1 \\to 1 \\to 2 \\to 3 \\to 4, and concatenating the labels on its edges in order, we get the string abba, which is a palindrome.\r\nThere is no path of length at most 3 from vertex 1 to vertex 4 whose concatenation of labels is a palindrome. Thus, the answer for (1, 4) is 4.\nNote that the empty string is also a palindrome.\n\nSample Input 2\n\n5\r\nus---\r\n-st--\r\n--s--\r\nu--s-\r\n---ts\n\nSample Output 2\n\n0 1 3 -1 -1\r\n-1 0 1 -1 -1\r\n-1 -1 0 -1 -1\r\n1 3 -1 0 -1\r\n-1 -1 5 1 0",
+    "examples": [
+      {
+        "input": "4\nab--\n--b-\n---a\nc---",
+        "output": "0 1 2 4\n-1 0 1 -1\n3 -1 0 1\n1 -1 -1 0",
+        "testtype": "stdin"
+      },
+      {
+        "input": "5\nus---\n-st--\n--s--\nu--s-\n---ts",
+        "output": "0 1 3 -1 -1\n-1 0 1 -1 -1\n-1 -1 0 -1 -1\n1 3 -1 0 -1\n-1 -1 5 1 0",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Palindromic Shortest Path",
+    "platform": "atcoder",
+    "date": "2025-02-22T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc394_g",
+    "statement": "There is a city divided into H \\times W blocks in the north-south-east-west directions, and there is exactly one building in each block.\nSpecifically, in the block at the i-th row from the north (1\\leq i\\leq H) and the j-th column from the west (1\\leq j\\leq W) (hereafter referred to as block (i,j)), there is a building of F_{i,j} floors.\nTakahashi has two ways of moving. If he is on the X-th floor (1\\leq X\\leq F_{i,j}) of the building in block (i,j), he can:\n\n- Move up or down one floor within the same building using stairs. If X=1, he cannot move down; if X=F_{i,j}, he cannot move up.\n- Choose a building with at least X floors in a cardinally adjacent block, and move to the X-th floor of that building using a (sky) walkway.\n\nHere, two blocks (i,j) and (i',j') are cardinally adjacent if and only if \\lvert i - i'\\rvert + \\lvert j - j'\\rvert = 1.\nYou are given Q queries to be answered. The i-th query (1\\leq i\\leq Q) is the following.\n\nFind the minimum possible number of times that Takahashi uses stairs to move from the Y_i-th floor of the building in block (A_i,B_i) to the Z_i-th floor of the building in block (C_i,D_i).\nThe count of times using stairs is incremented each time he moves up or down one floor, possibly multiple times within the same building. (For example, moving from the 1st floor to the 6th floor of a building counts as 5 uses of stairs.)\nNote that he does not have to minimize the number of times he uses walkways.\n\nInput\n\nThe input is given from Standard Input in the following format:\nH W\nF_{1,1} F_{1,2} \\ldots F_{1,W}\nF_{2,1} F_{2,2} \\ldots F_{2,W}\n\\vdots\nF_{H,1} F_{H,2} \\ldots F_{H,W}\nQ\nA_1 B_1 Y_1 C_1 D_1 Z_1\nA_2 B_2 Y_2 C_2 D_2 Z_2\n\\vdots\nA_Q B_Q Y_Q C_Q D_Q Z_Q\n\nOutput\n\nPrint Q lines. The i-th line should contain the answer to the i-th query as an integer.\n\nConstraints\n\n\n- 1\\leq H \\leq 500\n- 1\\leq W \\leq 500\n- 1\\leq F_{i,j} \\leq 10^6\n- 1\\leq Q\\leq 2\\times 10^5\n- 1\\leq A_i,C_i\\leq H\n- 1\\leq B_i,D_i\\leq W\n- 1\\leq Y_i\\leq F_{A_i,B_i}\n- 1\\leq Z_i\\leq F_{C_i,D_i}\n- (A_i,B_i,Y_i)\\neq (C_i,D_i,Z_i)\n- All input values are integers.\n\nSample Input 1\n\n3 3\n12 10 6\n1 1 3\n8 6 7\n2\n1 1 10 3 1 6\n1 1 6 1 2 4\n\nSample Output 1\n\n10\n2\n\nFor the first query, for example, it is possible to move from the 10th floor of the building in block (1,1) to the 6th floor of the building in block (3,1) by using stairs a total of 10 times, in the following manner:\n\n- Move from the 10th floor of the building in block (1,1) to the 10th floor of the building in block (1,2) via a walkway.\n- Use stairs 4 times to go from the 10th floor down to the 6th floor of the building in block (1,2).\n- Move from the 6th floor of the building in block (1,2) to the 6th floor of the building in block (1,3) via a walkway.\n- Use stairs 3 times to go from the 6th floor down to the 3rd floor of the building in block (1,3).\n- Move from the 3rd floor of the building in block (1,3) to the 3rd floor of the building in block (2,3) via a walkway.\n- Move from the 3rd floor of the building in block (2,3) to the 3rd floor of the building in block (3,3) via a walkway.\n- Use stairs 3 times to go from the 3rd floor up to the 6th floor of the building in block (3,3).\n- Move from the 6th floor of the building in block (3,3) to the 6th floor of the building in block (3,2) via a walkway.\n- Move from the 6th floor of the building in block (3,2) to the 6th floor of the building in block (3,1) via a walkway.\n\nIt is impossible to make this journey using at most 9 uses of stairs, so we output 10.\nFor the second query, if you first use a walkway to go to the building in block (1,2), and then use the stairs twice to go from the 6th floor down to the 4th floor, it is possible to move from the 6th floor of the building in block (1,1) to the 4th floor of the building in block (1,2) by using the stairs twice.",
+    "examples": [
+      {
+        "input": "3 3\n12 10 6\n1 1 3\n8 6 7\n2\n1 1 10 3 1 6\n1 1 6 1 2 4",
+        "output": "10\n2",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Dense Buildings",
+    "platform": "atcoder",
+    "date": "2025-02-22T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc395_e",
+    "statement": "You are given a directed graph with N vertices and M edges.\r\nThe i-th edge (1 \\leq i \\leq M) is a directed edge from vertex u _ i to vertex v _ i.\nInitially, you are at vertex 1. You want to repeat the following operations until you reach vertex N:\n\n- Perform one of the two operations below:\n- Move along a directed edge from your current vertex. This incurs a cost of 1. More precisely, if you are at vertex v, choose a vertex u such that there is a directed edge from v to u, and move to vertex u.\n- Reverse the direction of all edges. This incurs a cost of X. More precisely, if and only if there was a directed edge from v to u immediately before this operation, there is a directed edge from u to v immediately after this operation.\n\n\n\nIt is guaranteed that, for the given graph, you can reach vertex N from vertex 1 by repeating these operations.\nFind the minimum total cost required to reach vertex N.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN M X\r\nu _ 1 v _ 1\r\nu _ 2 v _ 2\r\n\\vdots\r\nu _ M v _ M\n\nOutput\n\nPrint the minimum total cost required to reach vertex N.\n\nConstraints\n\n\n- 2 \\leq N \\leq 2 \\times 10^5\n- 1 \\leq M \\leq 2 \\times 10^5\n- 1 \\leq X \\leq 10^9\n- 1 \\leq u _ i \\leq N \\ (1 \\leq i \\leq M)\n- 1 \\leq v _ i \\leq N \\ (1 \\leq i \\leq M)\n- For the given graph, it is guaranteed that you can reach vertex N from vertex 1 by the operations described.\n- All input values are integers.\n\nSample Input 1\n\n5 6 5\r\n1 2\r\n2 4\r\n3 1\r\n3 5\r\n4 3\r\n5 2\n\nSample Output 1\n\n4\r\n\nThe given graph looks like this:\n\nYou can reach vertex 5 with a total cost of 4 by doing the following:\n\n- Move to vertex 2 at a cost of 1.\n- Move to vertex 4 at a cost of 1.\n- Move to vertex 3 at a cost of 1.\n- Move to vertex 5 at a cost of 1.\n\nIt is impossible to reach vertex 5 with a total cost of 3 or less, so print 4.\n\nSample Input 2\n\n5 6 1\r\n1 2\r\n2 4\r\n3 1\r\n3 5\r\n4 3\r\n5 2\n\nSample Output 2\n\n3\r\n\nThe graph is the same as in Sample 1, but the cost to reverse edges is different.\nYou can reach vertex 5 with a total cost of 3 as follows:\n\n- Move to vertex 2 at a cost of 1.\n- Reverse all edges at a cost of 1.\n- Move to vertex 5 at a cost of 1.\n\nIt is impossible to reach vertex 5 with a total cost of 2 or less, so print 3.\n\nSample Input 3\n\n8 7 613566756\r\n2 1\r\n2 3\r\n4 3\r\n4 5\r\n6 5\r\n6 7\r\n8 7\n\nSample Output 3\n\n4294967299\r\n\nNote that the answer may exceed the 32-bit integer range.\n\nSample Input 4\n\n20 13 5\r\n1 3\r\n14 18\r\n18 17\r\n12 19\r\n3 5\r\n4 6\r\n13 9\r\n8 5\r\n14 2\r\n20 18\r\n8 14\r\n4 9\r\n14 8\n\nSample Output 4\n\n21",
+    "examples": [
+      {
+        "input": "5 6 5\n1 2\n2 4\n3 1\n3 5\n4 3\n5 2",
+        "output": "4",
+        "testtype": "stdin"
+      },
+      {
+        "input": "5 6 1\n1 2\n2 4\n3 1\n3 5\n4 3\n5 2",
+        "output": "3",
+        "testtype": "stdin"
+      },
+      {
+        "input": "8 7 613566756\n2 1\n2 3\n4 3\n4 5\n6 5\n6 7\n8 7",
+        "output": "4294967299",
+        "testtype": "stdin"
+      },
+      {
+        "input": "20 13 5\n1 3\n14 18\n18 17\n12 19\n3 5\n4 6\n13 9\n8 5\n14 2\n20 18\n8 14\n4 9\n14 8",
+        "output": "21",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Flip Edge",
+    "platform": "atcoder",
+    "date": "2025-03-01T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc394_f",
+    "statement": "You are given an undirected tree T with N vertices, numbered 1, 2, \\ldots, N. The i-th edge is an undirected edge connecting vertices A_i and B_i.\nA graph is defined to be an alkane if and only if it satisfies the following conditions:\n\n- The graph is an undirected tree.\n- Every vertex has degree 1 or 4, and there is at least one vertex of degree 4.\n\nDetermine whether there exists a subgraph of T that is an alkane, and if so, find the maximum number of vertices in such a subgraph.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN\r\nA_1 B_1\r\nA_2 B_2\r\n\\vdots\r\nA_{N - 1} B_{N - 1}\n\nOutput\n\nIf there exists a subgraph of T that is an alkane, print the maximum number of vertices in such a subgraph. Otherwise, print -1.\n\nConstraints\n\n\n- 1 \\leq N \\leq 2 \\times 10^5\n- 1 \\leq A_i, B_i \\leq N\n- The given graph is an undirected tree.\n- All input values are integers.\n\nSample Input 1\n\n9\r\n1 2\r\n2 3\r\n3 4\r\n4 5\r\n2 6\r\n2 7\r\n3 8\r\n3 9\n\nSample Output 1\n\n8\r\n\nLet (u, v) denote an undirected edge between vertices u and v.\nA subgraph consisting of vertices 1,2,3,4,6,7,8,9 and edges (1,2),(2,3),(3,4),(2,6),(2,7),(3,8),(3,9) is an alkane.\n\nSample Input 2\n\n7\r\n1 2\r\n1 3\r\n2 4\r\n2 5\r\n3 6\r\n3 7\n\nSample Output 2\n\n-1\n\nSample Input 3\n\n15\r\n8 5\r\n2 9\r\n1 12\r\n6 11\r\n9 3\r\n15 1\r\n7 12\r\n7 13\r\n10 5\r\n6 9\r\n5 1\r\n1 9\r\n4 5\r\n6 14\n\nSample Output 3\n\n11",
+    "examples": [
+      {
+        "input": "9\n1 2\n2 3\n3 4\n4 5\n2 6\n2 7\n3 8\n3 9",
+        "output": "8",
+        "testtype": "stdin"
+      },
+      {
+        "input": "7\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7",
+        "output": "-1",
+        "testtype": "stdin"
+      },
+      {
+        "input": "15\n8 5\n2 9\n1 12\n6 11\n9 3\n15 1\n7 12\n7 13\n10 5\n6 9\n5 1\n1 9\n4 5\n6 14",
+        "output": "11",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Alkane",
+    "platform": "atcoder",
+    "date": "2025-02-22T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc398_g",
+    "statement": "You are given a simple undirected graph with N vertices and M edges, with vertices labeled 1 to N and edges labeled 1 to M. The i-th edge connects vertices U_i and V_i. Initially, G does not contain an odd cycle.\nTakahashi and Aoki will play a game using this graph G. With Aoki going first, they take turns performing the following operation:\n\n- Choose a pair of integers (i,j) with 1 \\leq i < j \\leq N that satisfies both of the following conditions, then add an edge connecting vertices i and j to G.\n- G does not already have an edge connecting vertices i and j.\n- Adding an edge connecting vertices i and j does not create an odd cycle.\n\n\n\nA player who cannot perform this operation loses, and the other player wins.\nDetermine who wins when both players play optimally.\n\nWhat is an odd cycle?\nA sequence of vertices (v_0,v_1,\\ldots,v_k) of G is called an odd cycle if and only if all of the following conditions are satisfied:\n\n- k is odd.\n- v_0=v_k.\n- For every 1\\leq i \\leq k, there is an edge connecting v_{i-1} and v_{i}.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN M\nU_1 V_1\nU_2 V_2\n\\vdots\nU_M V_M\n\nOutput\n\nIf Aoki (the first player) wins, print Aoki; otherwise, if Takahashi (the second player) wins, print Takahashi.\n\nConstraints\n\n\n- 1 \\leq N \\leq 2\\times 10^5\n- 0 \\leq M \\leq 2\\times 10^5\n- 1 \\leq U_i < V_i \\leq N\n- The given graph does not contain an odd cycle.\n- The given graph does not contain multi-edges.\n- All input values are integers.\n\nSample Input 1\n\n4 3\n1 2\n2 3\n3 4\n\nSample Output 1\n\nAoki\n\nIf Aoki (the first player) adds the edge (1,4), Takahashi (the second player) cannot move. Thus, Aoki wins.\n\nSample Input 2\n\n4 2\n1 2\n3 4\n\nSample Output 2\n\nTakahashi\n\nNo matter how Aoki plays, Takahashi wins.\n\nSample Input 3\n\n9 5\n2 9\n2 3\n4 6\n5 7\n1 8\n\nSample Output 3\n\nAoki",
+    "examples": [
+      {
+        "input": "4 3\n1 2\n2 3\n3 4",
+        "output": "Aoki",
+        "testtype": "stdin"
+      },
+      {
+        "input": "4 2\n1 2\n3 4",
+        "output": "Takahashi",
+        "testtype": "stdin"
+      },
+      {
+        "input": "9 5\n2 9\n2 3\n4 6\n5 7\n1 8",
+        "output": "Aoki",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Not Only Tree Game",
+    "platform": "atcoder",
+    "date": "2025-03-22T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc397_g",
+    "statement": "You are given a directed graph with N vertices and M edges. The vertices are numbered 1,2,\\dots,N. Edge j (j=1,2,\\dots,M) goes from vertex u_j to vertex v_j. It is guaranteed that vertex N is reachable from vertex 1.\nInitially, all edges have weight 0. We choose exactly K out of the M edges and change their weights to 1. Find the maximum possible value of the shortest distance from vertex 1 to vertex N in the resulting graph.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN M K\r\nu_1 v_1\r\nu_2 v_2\r\n\\vdots\r\nu_M v_M\n\nOutput\n\nPrint the answer.\n\nConstraints\n\n\n- 2 \\leq N \\leq 30\n- 1 \\leq K \\leq M \\leq 100\n- 1 \\leq u_j, v_j \\leq N\n- u_j \\neq v_j\n- In the given graph, vertex N is reachable from vertex 1.\n- All input values are integers.\n\nSample Input 1\n\n3 3 2\r\n1 2\r\n2 3\r\n1 3\n\nSample Output 1\n\n1\r\n\nBy choosing edges 1,3, the shortest distance from vertex 1 to vertex 3 becomes 1. There is no way to make the shortest distance 2 or greater, so the answer is 1.\n\nSample Input 2\n\n4 4 3\r\n1 2\r\n1 3\r\n3 2\r\n2 4\n\nSample Output 2\n\n2\r\n\nBy choosing edges 1,2,4, the shortest distance from vertex 1 to vertex 4 becomes 2. There is no way to make the shortest distance 3 or greater, so the answer is 2.\n\nSample Input 3\n\n2 2 1\r\n1 2\r\n1 2\n\nSample Output 3\n\n0\r\n\nNote that there may be multi-edges.",
+    "examples": [
+      {
+        "input": "3 3 2\n1 2\n2 3\n1 3",
+        "output": "1",
+        "testtype": "stdin"
+      },
+      {
+        "input": "4 4 3\n1 2\n1 3\n3 2\n2 4",
+        "output": "2",
+        "testtype": "stdin"
+      },
+      {
+        "input": "2 2 1\n1 2\n1 2",
+        "output": "0",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Maximize Distance",
+    "platform": "atcoder",
+    "date": "2025-03-15T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc399_e",
+    "statement": "You are given a positive integer N and two strings S and T, each of length N and consisting of lowercase English letters.\nDetermine whether it is possible to make S identical to T by repeating the operation below any number of times (possibly zero). If it is possible, also find the minimum number of operations required.\n\n- Choose two lowercase English letters x, y and replace every occurrence of x in S with y.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN\r\nS\r\nT\n\nOutput\n\nIf it is possible to make S identical to T, print the minimum number of operations required. Otherwise, print -1.\n\nConstraints\n\n\n- 1\\leq N \\leq 2\\times 10^5\n- N is an integer.\n- Each of S and T is a string of length N, consisting of lowercase English letters.\n\nSample Input 1\n\n6\r\nafbfda\r\nbkckbb\n\nSample Output 1\n\n4\r\n\nBy performing the operation four times in the following way, you can make S identical to T:\n\n- Choose x= b and y= c. S becomes afcfda.\n- Choose x= a and y= b. S becomes bfcfdb.\n- Choose x= f and y= k. S becomes bkckdb.\n- Choose x= d and y= b. S becomes bkckbb, which is identical to T.\n\nIt cannot be done with fewer than four operations, so the minimum number of operations required is 4.\n\nSample Input 2\n\n4\r\nabac\r\nabac\n\nSample Output 2\n\n0\r\n\nS and T are already identical, so no operations are required.\n\nSample Input 3\n\n4\r\nabac\r\nabrc\n\nSample Output 3\n\n-1\r\n\nNo matter how you repeat the operation, it is impossible to make S identical to T.\n\nSample Input 4\n\n4\r\nabac\r\nbcba\n\nSample Output 4\n\n4",
+    "examples": [
+      {
+        "input": "6\nafbfda\nbkckbb",
+        "output": "4",
+        "testtype": "stdin"
+      },
+      {
+        "input": "4\nabac\nabac",
+        "output": "0",
+        "testtype": "stdin"
+      },
+      {
+        "input": "4\nabac\nabrc",
+        "output": "-1",
+        "testtype": "stdin"
+      },
+      {
+        "input": "4\nabac\nbcba",
+        "output": "4",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Replace",
+    "platform": "atcoder",
+    "date": "2025-03-29T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "abc390_e",
+    "statement": "There are N foods, each containing exactly one of vitamins 1, 2, and 3.\nSpecifically, eating the i-th food gives you A_i units of vitamin V_i, and C_i calories.\nTakahashi can choose any subset of these N foods as long as the total calorie consumption does not exceed X.\nFind the maximum possible value of this: the minimum intake among vitamins 1, 2, and 3.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN X\nV_1 A_1 C_1\nV_2 A_2 C_2\n\\vdots\nV_N A_N C_N\n\nOutput\n\nPrint the maximum possible value of \"the minimum intake among vitamins 1, 2, and 3\" when the total calories consumed is at most X.\n\nConstraints\n\n\n- 1 \\leq N \\leq 5000\n- 1 \\leq X \\leq 5000\n- 1 \\leq V_i \\leq 3\n- 1 \\leq A_i \\leq 2 \\times 10^5\n- 1 \\leq C_i \\leq X\n- All input values are integers.\n\nSample Input 1\n\n5 25\n1 8 5\n2 3 5\n2 7 10\n3 2 5\n3 3 10\n\nSample Output 1\n\n3\n\nEach food provides the following if eaten:\n\n- 1st food: 8 units of vitamin 1, and 5 calories\n- 2nd food: 3 units of vitamin 2, and 5 calories\n- 3rd food: 7 units of vitamin 2, and 10 calories\n- 4th food: 2 units of vitamin 3, and 5 calories\n- 5th food: 3 units of vitamin 3, and 10 calories\n\nEating the 1st, 2nd, 4th, and 5th foods gives 8 units of vitamin 1, 3 units of vitamin 2, 5 units of vitamin 3, and 25 calories.\nIn this case, the minimum among the three vitamin intakes is 3 (vitamin 2).\nIt is impossible to get 4 or more units of each vitamin without exceeding 25 calories, so the answer is 3.\n\nSample Input 2\n\n2 5000\n1 200000 1\n2 200000 1\n\nSample Output 2\n\n0",
+    "examples": [
+      {
+        "input": "5 25\n1 8 5\n2 3 5\n2 7 10\n3 2 5\n3 3 10",
+        "output": "3",
+        "testtype": "stdin"
+      },
+      {
+        "input": "2 5000\n1 200000 1\n2 200000 1",
+        "output": "0",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Vitamin Balance",
+    "platform": "atcoder",
+    "date": "2025-01-25T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  },
+  {
+    "task_id": "arc194_e",
+    "statement": "You are given two strings S and T, each of length N and consisting of 0 and 1, as well as two positive integers X and Y. For i = 1, 2, \\ldots, N, let S_i denote the i-th character of S.\nDetermine whether it is possible to make S identical to T by repeatedly performing Operations A and B below any number of times (possibly zero) in any order:\n\n- \r\n(Operation A) Choose an integer i satisfying 1 \\leq i \\leq N-(X+Y)+1, S_{i} = S_{i+1} = \\cdots = S_{i+X-1} = 0, and S_{i+X} = S_{i+X+1} = \\cdots = S_{i+X+Y-1} = 1, then change each of S_{i}, S_{i+1}, \\ldots, S_{i+Y-1} to 1 and each of S_{i+Y}, S_{i+Y+1}, \\ldots, S_{i+Y+X-1} to 0.\n\n- \r\n(Operation B) Choose an integer i satisfying 1 \\leq i \\leq N-(X+Y)+1, S_{i} = S_{i+1} = \\cdots = S_{i+Y-1} = 1, and S_{i+Y} = S_{i+Y+1} = \\cdots = S_{i+Y+X-1} = 0, then change each of S_{i}, S_{i+1}, \\ldots, S_{i+X-1} to 0 and each of S_{i+X}, S_{i+X+1}, \\ldots, S_{i+X+Y-1} to 1.\n\nInput\n\nThe input is given from Standard Input in the following format:\nN X Y\r\nS\r\nT\n\nOutput\n\nIf it is possible to make S identical to T, print Yes; otherwise, print No.\n\nConstraints\n\n\n- 1 \\leq N \\leq 5 \\times 10^5\n- 1 \\leq X, Y \\leq N\n- S and T are strings of length N consisting of 0 and 1.\n- All input values are integers.\n\nSample Input 1\n\n9 2 1\r\n000111001\r\n011000011\n\nSample Output 1\n\nYes\r\n\nThe following procedure can transform S into T:\n\n- First, perform Operation A with i = 2. Now, S = 010011001.\n- Next, perform Operation B with i = 6. Now, S = 010010011.\n- Finally, perform Operation A with i = 3. Now, S = 011000011.\n\nThus, print Yes.\n\nSample Input 2\n\n1 1 1\r\n0\r\n1\n\nSample Output 2\n\nNo\r\n\nIt is impossible to make S identical to T. Thus, print No.",
+    "examples": [
+      {
+        "input": "9 2 1\n000111001\n011000011",
+        "output": "Yes",
+        "testtype": "stdin"
+      },
+      {
+        "input": "1 1 1\n0\n1",
+        "output": "No",
+        "testtype": "stdin"
+      }
+    ],
+    "difficulty": "hard",
+    "title": "Swap 0^X and 1^Y",
+    "platform": "atcoder",
+    "date": "2025-03-09T00:00:00",
+    "source": {
+      "dataset": "livecodebench/code_generation_lite",
+      "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+    }
+  }
+]

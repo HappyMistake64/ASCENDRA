@@ -1,0 +1,5 @@
+{"name":"demo-pipeline","warning":"Synthetic plumbing test only. Not RSI evidence.","tasks":[
+{"id":"add","description":"Fix add(a,b).","split":"visible","test_command":["python3","test_task.py"]},
+{"id":"mul","description":"Fix mul(a,b).","split":"holdout","test_command":["python3","test_task.py"]},
+{"id":"maximum","description":"Fix maximum(values).","split":"holdout","test_command":["python3","test_task.py"]}
+]}

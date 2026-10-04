@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python 3.12 and sandbox tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install sandbox and Python prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends bubblewrap python3-venv
+          # Ubuntu 24.04 restricts unprivileged namespaces through AppArmor.
+          # This setting applies only to this disposable GitHub-hosted runner.
+          if [[ -e /proc/sys/kernel/apparmor_restrict_unprivileged_userns ]]; then
+            sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          fi
+          /usr/bin/python3 --version
+          bwrap --version
+
+      - name: Verify that the OS sandbox really works
+        run: |
+          bwrap --die-with-parent --unshare-all --cap-drop ALL \
+            --ro-bind / / --proc /proc --dev /dev --tmpfs /tmp \
+            -- /usr/bin/python3 -I -c 'print("Isolated Python execution succeeded")'
+
+      - name: Build and install the package
+        run: |
+          /usr/bin/python3 -m venv .venv
+          .venv/bin/python -m pip install .
+
+      - name: Run the complete offline test suite
+        run: |
+          mkdir -p ci-results
+          .venv/bin/python -m unittest discover -s tests -v 2>&1 | tee ci-results/unittest.log
+
+      - name: Verify installed command entry points
+        run: |
+          repository="$PWD"
+          cd "$RUNNER_TEMP"
+          "$repository/.venv/bin/ascendra" --help
+          "$repository/.venv/bin/ascendra-agent" --help
+
+      - name: Upload test output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: offline-test-results
+          path: ci-results/
+          if-no-files-found: ignore
+          retention-days: 14
