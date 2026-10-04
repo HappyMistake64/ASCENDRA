@@ -36,7 +36,7 @@ class SubscriptionProvider(CodexCLIProvider):
             raise ProviderBlocked('Repository root must be a dedicated directory.')
         self.call_records = []
         self.event_sink = None
-        self.codex_directory = Path(os.environ.get('CODEX_HOME', str(Path.home() / '.codex')))
+        self.codex_directory = Path(os.environ.get('CODEX_HOME', str(Path.home() / '.codex'))).resolve()
         self.auth_file = self.codex_directory / 'auth.json'
         if not self.auth_file.is_file():
             raise ProviderBlocked('Codex file authentication is required; run codex login --device-auth.')
@@ -44,11 +44,19 @@ class SubscriptionProvider(CodexCLIProvider):
     def isolated_command(self, command, scratch):
         # Hide the entire repository (including transport bundles and evidence),
         # all other temporary workspaces, and host processes/file descriptors.
-        return [self.bwrap, '--die-with-parent', '--unshare-pid', '--unshare-ipc',
-                '--unshare-uts', '--ro-bind', '/', '/', '--tmpfs', str(self.root),
-                '--tmpfs', str(Path.home()), '--tmpfs', str(self.codex_directory),
-                '--ro-bind', str(self.auth_file), str(self.auth_file),
-                '--tmpfs', '/tmp', '--proc', '/proc', '--dev', '/dev',
+        root, home = self.root.resolve(), Path.home().resolve()
+        codex, scratch = self.codex_directory.resolve(), Path(scratch).resolve()
+        if any(path.is_relative_to(root) for path in (home, codex, scratch)):
+            raise ProviderBlocked('Repository must not contain the home, Codex state, or provider scratch directory.')
+        # Mount parents first: a later home or /tmp mount would otherwise erase
+        # a nested repository's empty mountpoint or the authentication bind.
+        hidden = sorted({Path('/tmp'), home, root, codex}, key=lambda path: (len(path.parts), str(path)))
+        isolated = [self.bwrap, '--die-with-parent', '--unshare-pid', '--unshare-ipc',
+                    '--unshare-uts', '--ro-bind', '/', '/']
+        for path in hidden:
+            isolated.extend(['--tmpfs', str(path)])
+        return isolated+['--ro-bind', str(self.auth_file), str(self.auth_file),
+                '--proc', '/proc', '--dev', '/dev',
                 '--bind', str(scratch), str(scratch), '--chdir', str(scratch),
                 '--', *command]
 

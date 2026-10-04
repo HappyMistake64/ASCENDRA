@@ -4,7 +4,7 @@ Zdrojový kód je nyní přímo v repozitáři. Historické soubory v `cloud_bun
 
 ## Automatické kontroly
 
-Workflow **CI** běží na push, pull request i ruční spuštění. Ubuntu 24.04 poskytuje systémový Python 3.12, který používá i sandbox. Workflow instaluje `bubblewrap`, ověřuje skutečnou izolaci, sestaví balíček, spustí celou testovací sadu a zkontroluje obě instalovaná CLI. Log testů se uchovává 14 dní.
+Workflow **CI** běží na push do `main`, pull request do `main` i ruční spuštění. Tím nezdvojuje kontroly téže změny při každém push do pracovní větve. Ubuntu 24.04 poskytuje systémový Python 3.12, který používá i sandbox. Workflow instaluje `bubblewrap`, ověřuje skutečnou izolaci, sestaví balíček, spustí celou testovací sadu a zkontroluje obě instalovaná CLI. Log testů se uchovává 14 dní.
 
 Token workflow má pouze `contents: read`. CI nepotřebuje žádné repository secrets a neprovádí modelová volání. Actions jsou připnuté na konkrétní commity a Dependabot měsíčně navrhuje jejich aktualizace. Pro uživatelské namespaces workflow upravuje příslušný AppArmor sysctl pouze na dočasném runneru.
 
