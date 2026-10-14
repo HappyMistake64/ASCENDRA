@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+import time
 from ascendra.continuation_worker import schedule_after_run, process_one
 from ascendra.execution_queue import ExecutionQueue
 
@@ -83,6 +85,47 @@ class ContinuationWorkerTests(unittest.TestCase):
         self.assertNotIn('private', str(result['result']))
         self.assertEqual(self.schedule()['id'], child['id'])
         self.assertIsNone(process_one(self.data, research_fn=evidence, decider_factory=factory))
+
+    def test_crash_before_research_checkpoint_keeps_original_deadline(self):
+        child = self.schedule()
+        now = time.time()
+        def crash(*args, **kwargs):
+            raise SystemExit('simulated process crash during research')
+        with patch('ascendra.continuation_worker.time.time', return_value=now):
+            with self.assertRaises(SystemExit):
+                process_one(self.data, research_fn=crash, decider_factory=factory)
+        saved = self.queue.get(child['id'])['checkpoints']
+        self.assertEqual(saved['deadline']['at'], now + 180)
+        self.assertNotIn('research', saved)
+        # Simulate expiry of the crashed worker's lease without waiting.
+        with self.queue._connection(write=True) as db:
+            db.execute('UPDATE execution_jobs SET lease_until=0 WHERE id=?', (child['id'],))
+        def forbidden(*args, **kwargs):
+            self.fail('expired research must not restart or call the model')
+        with patch('ascendra.continuation_worker.time.time', return_value=now + 181):
+            result = process_one(self.data, research_fn=forbidden, decider_factory=forbidden)
+        self.assertEqual(result['state'], 'failed')
+        self.assertEqual(result['result']['error_type'], 'TimeoutError')
+        self.assertEqual(result['checkpoints']['deadline'], saved['deadline'])
+
+    def test_reclaim_uses_remaining_budget_instead_of_new_budget(self):
+        child = self.schedule()
+        now = time.time()
+        def crash(*args, **kwargs):
+            raise SystemExit('simulated crash')
+        with patch('ascendra.continuation_worker.time.time', return_value=now):
+            with self.assertRaises(SystemExit):
+                process_one(self.data, research_fn=crash, decider_factory=factory)
+        with self.queue._connection(write=True) as db:
+            db.execute('UPDATE execution_jobs SET lease_until=0 WHERE id=?', (child['id'],))
+        def bounded_factory(*args, **kwargs):
+            self.assertGreater(kwargs['timeout_s'], 76)
+            self.assertLessEqual(kwargs['timeout_s'], 77)
+            return factory(*args, **kwargs)
+        with patch('ascendra.continuation_worker.time.time', return_value=now + 100):
+            result = process_one(self.data, research_fn=evidence, decider_factory=bounded_factory)
+        self.assertEqual(result['state'], 'completed')
+        self.assertEqual(result['checkpoints']['deadline']['at'], now + 180)
 
     def test_interrupted_reserved_call_never_replays(self):
         child = self.schedule()

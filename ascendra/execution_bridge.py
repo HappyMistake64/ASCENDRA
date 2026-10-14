@@ -20,6 +20,7 @@ from urllib.parse import urlsplit
 import uuid
 
 from .execution_queue import ExecutionQueue
+from .studio_projects import ALLOWED_FILES, MAX_FILE_BYTES, validate_artifact_files
 
 
 class FenceLost(RuntimeError):
@@ -96,20 +97,17 @@ def bounded_artifact(directory, allowed_root):
     if directory.is_symlink() or not directory.resolve().is_relative_to(allowed_root):
         raise ValueError('Artifact outside worker storage')
     files = []
-    for name in ('index.html', 'styles.css', 'app.js'):
+    for name in ALLOWED_FILES:
         path = directory / name
         if not path.exists():
             continue
-        if path.is_symlink() or not path.is_file() or path.stat().st_size > 256000:
+        if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_FILE_BYTES:
             raise ValueError('Invalid artifact file')
-        content = path.read_text(encoding='utf-8')
+        content = path.read_bytes().decode('utf-8')
         if not content:
             raise ValueError('Empty artifact file')
         files.append({'path': name, 'content': content})
-    if not any(f['path'] == 'index.html' for f in files):
-        raise ValueError('Artifact has no index.html')
-    if len(json.dumps(files, ensure_ascii=False).encode()) > 600000:
-        raise ValueError('Artifact too large')
+    validate_artifact_files(files)
     return files
 
 

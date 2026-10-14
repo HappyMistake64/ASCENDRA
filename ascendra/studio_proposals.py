@@ -92,6 +92,47 @@ def _signature(value):
     return " ".join(re.findall(r"\w+", unicodedata.normalize("NFKC", value).casefold()))
 
 
+def bound_proposal_evidence(request, *, max_request_bytes):
+    """Fit excerpts to a provider's byte budget without discarding provenance.
+
+    Original research stays intact in the store. The model sees explicit prefix
+    truncation metadata, every supplied URL/title/timestamp, and at least one
+    character per excerpt. Oversized metadata fails before a provider call.
+    """
+    bounded = deepcopy(request)
+    sources = bounded["research_evidence"]["sources"]
+    originals = [source["excerpt"] for source in sources]
+
+    def size():
+        return len(json.dumps(bounded, ensure_ascii=False, allow_nan=False).encode("utf-8"))
+
+    if size() <= max_request_bytes:
+        return bounded
+    bounded["research_evidence"]["excerpt_policy"] = (
+        "Excerpts may be shortened prefixes. Use only visible evidence; "
+        "omitted text has not been assessed.")
+
+    def shorten(limit):
+        for source, original in zip(sources, originals):
+            source["excerpt"] = original[:limit]
+            source["excerpt_truncated"] = len(original) > limit
+            source["original_excerpt_characters"] = len(original)
+
+    shorten(1)
+    if size() > max_request_bytes:
+        raise ValueError("Research metadata exceeds local context budget; reduce source scope")
+    low, high = 1, max(map(len, originals))
+    while low < high:
+        middle = (low + high + 1) // 2
+        shorten(middle)
+        if size() <= max_request_bytes:
+            low = middle
+        else:
+            high = middle - 1
+    shorten(low)
+    return bounded
+
+
 def generate_proposals(research: dict, *, mode: str = "self_improvement", decide) -> dict:
     """Return a validated batch or raise ValueError; never approve or execute it.
 

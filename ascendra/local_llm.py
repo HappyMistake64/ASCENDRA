@@ -73,9 +73,14 @@ class LocalDecider:
                   'unless the request supplies evidence. Keep responses concise. '
                   'When asked for proposals, return exactly three distinct proposals. '
                   'Schema: ' + json.dumps(schema, ensure_ascii=False))
+        if isinstance(request, dict) and request.get('task') == 'generate_evidence_backed_proposals':
+            from .studio_proposals import bound_proposal_evidence
+            request = bound_proposal_evidence(request, max_request_bytes=(
+                self.context - self.max_output_tokens - 512 - len(system.encode())))
         prompt = json.dumps(request, ensure_ascii=False, allow_nan=False)
         # Conservative byte bound prevents silently dropping a large public-file
-        # or research context. There is no automatic truncation/retry fallback.
+        # context. Research excerpts are explicitly bounded above; other input is
+        # never truncated, and no provider retry fallback is used.
         if len((system + prompt).encode()) + self.max_output_tokens + 512 > self.context:
             raise ValueError('Input exceeds local context budget; reduce source or file scope')
         payload = dict(model=self.model, stream=False, format=schema, keep_alive='5m',

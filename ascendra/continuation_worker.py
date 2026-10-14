@@ -49,7 +49,6 @@ def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=researc
         return None
     identity = (job['id'], worker, job['fence'])
     payload, checkpoints = job['payload'], job['checkpoints']
-    started = time.monotonic()
     try:
         if payload.get('kind') != 'post_run_research' or payload.get('budget') != BUDGET:
             raise ValueError('Invalid continuation job')
@@ -59,6 +58,22 @@ def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=researc
             return queue.finish(*identity, state='failed', result={
                 'status': 'interrupted_uncertain', 'execution_started': False,
                 'reason': 'Reserved model call will not be replayed automatically'})
+        # Persist the deadline before any research side effect. A reclaimed job
+        # must include downtime in its budget, even if research never checkpointed.
+        # Older interrupted jobs lacking this checkpoint use enqueue time safely.
+        if 'deadline' in checkpoints:
+            deadline = checkpoints['deadline']['at']
+        else:
+            start = time.time() if job['fence'] == 1 else job['created_at']
+            deadline = start + BUDGET['wall_seconds']
+            queue.checkpoint(*identity, 'deadline', {'at': deadline})
+        remaining = deadline - time.time()
+        if remaining < 4:
+            raise TimeoutError('Continuation wall budget exhausted')
+        # Monotonic time also bounds this attempt if the host clock moves back.
+        attempt_deadline = time.monotonic() + remaining
+        def remaining_seconds():
+            return min(deadline - time.time(), attempt_deadline - time.monotonic())
         store = StudioStore(data / 'studio.sqlite3')
         if 'research' in checkpoints:
             evidence = store.get_research(checkpoints['research']['id'])
@@ -69,7 +84,7 @@ def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=researc
         if evidence.get('status') != 'complete':
             return queue.finish(*identity, state='failed', result={
                 'status': 'research_failed', 'research_id': evidence['id'], 'execution_started': False})
-        remaining = BUDGET['wall_seconds'] - (time.monotonic() - started)
+        remaining = remaining_seconds()
         if remaining < 4:
             raise TimeoutError('Research wall budget exhausted')
         queue.checkpoint(*identity, 'model_reserved', {'calls': 1, 'tokens': 20480})
@@ -96,7 +111,7 @@ def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=researc
             schema['properties']['recommendation_reason']['maxLength'] = 200
             return provider(request, schema)
         batch = generate_proposals(evidence, mode=payload['mode'], decide=concise_decide)
-        if time.monotonic() - started > BUDGET['wall_seconds']:
+        if remaining_seconds() <= 0:
             raise TimeoutError('Continuation wall budget exhausted')
         # Check fence immediately before durable publication into proposal store.
         queue.heartbeat(*identity, lease_seconds=60)

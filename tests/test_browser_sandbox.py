@@ -15,6 +15,29 @@ class BrowserSandboxTests(unittest.TestCase):
             with self.assertRaises(SandboxUnavailable):
                 build_command('.', 'contract.json', 'report.json')
 
+    def test_home_node_runtime_uses_neutral_mount(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime = root / 'home' / 'owner' / '.nvm' / 'versions' / 'node' / 'v22'
+            (runtime / 'bin').mkdir(parents=True)
+            node = runtime / 'bin' / 'node'
+            node.touch()
+            project = root / 'project'
+            project.mkdir()
+            output = root / 'evidence'
+            output.mkdir()
+            contract = root / 'contract.json'
+            contract.write_text('{}')
+            import shutil
+            real_which = shutil.which
+            with patch('ascendra.browser_sandbox.shutil.which', side_effect=lambda name: str(node) if name == 'node' else real_which(name)):
+                command = build_command(project, contract, output / 'report.json')
+            self.assertIn(['--ro-bind', str(runtime), '/runtime'], [command[i:i+3] for i in range(len(command)-2)])
+            self.assertEqual(command[command.index('--')+1], '/runtime/bin/node')
+            # The host path is only a mount source, never a target or executable.
+            self.assertEqual(command.count(str(runtime)), 1)
+            self.assertNotIn(str(node), command)
+
     def test_real_namespace_browser_and_network_isolation(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

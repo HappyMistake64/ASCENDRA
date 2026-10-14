@@ -32,10 +32,27 @@ function playwright() {
   for(const candidate of candidates) {try{return createRequire(path.resolve(candidate))('playwright');}catch{}}
   throw Error('Playwright unavailable; set ASCENDRA_PLAYWRIGHT_PACKAGE to package.json beside installed node_modules');
 }
+// Screenshots are optional evidence, never an unbounded filesystem sink.
+export const SCREENSHOT_LIMITS = Object.freeze({perFile: 512 * 1024, total: 2 * 1024 * 1024});
+export async function saveScreenshot(page, destination, budget) {
+  if (budget.bytes >= SCREENSHOT_LIMITS.total) return false;
+  // Capture the bounded viewport into memory first: Playwright must not write an
+  // oversized image before we inspect its encoded size.
+  const bytes = await page.screenshot({type:'jpeg',quality:60,fullPage:false,timeout:3000});
+  if (bytes.length > SCREENSHOT_LIMITS.perFile || budget.bytes + bytes.length > SCREENSHOT_LIMITS.total) return false;
+  await fs.writeFile(destination, bytes, {flag:'wx'});
+  budget.bytes += bytes.length;
+  return true;
+}
 export async function verify(project, contract, output) {
   validateContract(contract);
   const root=await fs.realpath(project);await fs.access(path.join(root,'index.html'));
   const outputPath=path.resolve(output), evidence=outputPath+'.evidence';await fs.mkdir(evidence,{recursive:true});
+  const screenshotBudget={bytes:0};
+  // Include evidence retained from previous attempts in the same report budget.
+  for(const entry of await fs.readdir(evidence,{withFileTypes:true})) {
+    if(entry.isFile()) screenshotBudget.bytes += (await fs.stat(path.join(evidence,entry.name))).size;
+  }
   const report={version:1,passed:false,checks:[],page_errors:[],external_requests:[],screenshots:[],started_at:new Date().toISOString()};
   const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.json':'application/json'};
   const server=http.createServer(async(req,res)=>{
@@ -102,7 +119,7 @@ export async function verify(project, contract, output) {
           } catch(error) {report.checks.push({scenario:scenario.name,step:number,action:step.action,passed:false,error:error.message.slice(0,2000)});break;}
         }
       }catch(error){report.checks.push({scenario:scenario.name,passed:false,error:error.message.slice(0,2000)});}
-      try{const shot=path.join(evidence,`scenario-${index}.png`);await page.screenshot({path:shot,timeout:3000});report.screenshots.push(shot);}catch{}
+      try{const shot=path.join(evidence,`scenario-${index}.jpg`);if(await saveScreenshot(page,shot,screenshotBudget))report.screenshots.push(shot);}catch{}
       await context.close();
     }
   }catch(error){report.checks.push({action:'harness',passed:false,error:error.message.slice(0,2000)});}

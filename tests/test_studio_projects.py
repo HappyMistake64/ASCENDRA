@@ -5,7 +5,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ascendra.studio_projects import build_project, MAX_FILE_BYTES
+from ascendra.studio_projects import build_project, MAX_FILE_BYTES, MAX_TOTAL_BYTES
+from ascendra.execution_bridge import bounded_artifact
 
 
 def document(body="", head=""):
@@ -73,6 +74,46 @@ class ProjectBuilderTests(unittest.TestCase):
                          {"files": answer()["files"] * 4}, {"files": [{"path": "app.js", "content": "hello"}]}):
             with self.assertRaises(ValueError):
                 self.build(response)
+
+    def test_generated_file_at_byte_limit_is_deliverable(self):
+        html = document("é" * ((MAX_FILE_BYTES - len(document().encode())) // 2))
+        html += " " * (MAX_FILE_BYTES - len(html.encode()))
+        response = answer(html)
+        self.build(response)
+        self.assertEqual(bounded_artifact(self.destination, self.root), response["files"])
+
+    def test_upload_preserves_generated_crlf_bytes_and_hash(self):
+        response = answer(document("Line one\r\nLine two"))
+        self.build(response)
+        self.assertEqual(bounded_artifact(self.destination, self.root), response["files"])
+
+    def test_old_256_kib_limit_is_rejected_before_publication(self):
+        html = document("x" * (MAX_FILE_BYTES + 1 - len(document())))
+        with self.assertRaises(ValueError):
+            self.build(answer(html))
+        self.assertFalse(self.destination.exists())
+
+    def test_encoded_total_boundary_includes_json_escaping(self):
+        response = answer(document(), [
+            {"path": "styles.css", "content": "/*" + "\n" * 149000 + "*/"},
+            {"path": "app.js", "content": "//" + "x" * 255000}])
+        remaining = MAX_TOTAL_BYTES - len(json.dumps(response["files"], ensure_ascii=False).encode())
+        response["files"][0]["content"] = document("x" * remaining)
+        self.assertEqual(len(json.dumps(response["files"], ensure_ascii=False).encode()), MAX_TOTAL_BYTES)
+        self.build(response)
+        delivered = bounded_artifact(self.destination, self.root)
+        self.assertEqual(len(json.dumps(delivered, ensure_ascii=False).encode()), MAX_TOTAL_BYTES)
+        # A single extra byte must fail generation, not post-verification upload.
+        response["files"][0]["content"] += "x"
+        with self.assertRaisesRegex(ValueError, "Encoded artifact"):
+            build_project("Counter", self.root / "too-big", decide=lambda *args: response)
+        self.assertFalse((self.root / "too-big").exists())
+
+    def test_optional_empty_files_rejected_before_upload(self):
+        for content in ("", " \n\t", "\ufeff"):
+            with self.subTest(content=content), self.assertRaises(ValueError):
+                self.build(answer(extras=[{"path": "app.js", "content": content}]))
+        self.assertFalse(self.destination.exists())
 
     def test_bad_local_references_and_schemes(self):
         for reference in ("missing.css", "../index.html", "%2e%2e/index.html", "/index.html", "..\\index.html", "%252e%252e/index.html", "javascript:alert(1)", "file:///etc/passwd", "//example.org/a"):

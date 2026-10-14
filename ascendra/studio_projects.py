@@ -20,8 +20,8 @@ from urllib.parse import unquote, urlsplit
 from .capability_agent import _validate_schema
 
 
-MAX_FILE_BYTES = 256 * 1024
-MAX_TOTAL_BYTES = 768 * 1024
+MAX_FILE_BYTES = 256000
+MAX_TOTAL_BYTES = 600000  # Encoded artifact array, including JSON escaping/metadata.
 ALLOWED_FILES = ("index.html", "styles.css", "app.js")
 PROJECT_SCHEMA = {
     "type": "object", "additionalProperties": False,
@@ -33,6 +33,22 @@ PROJECT_SCHEMA = {
                   "required": ["path", "content"]}}},
     "required": ["files"],
 }
+
+
+def validate_artifact_files(files):
+    """Shared generation/upload bounds; reject before testing an undeliverable app."""
+    seen = set()
+    for item in files:
+        name, content = item["path"], item["content"]
+        if (name not in ALLOWED_FILES or name in seen or
+                not isinstance(content, str) or not content.strip().strip("\ufeff").strip() or
+                "\0" in content or len(content.encode("utf-8")) > MAX_FILE_BYTES):
+            raise ValueError("Invalid artifact file or file size limit exceeded")
+        seen.add(name)
+    if "index.html" not in seen:
+        raise ValueError("Artifact has no index.html")
+    if len(json.dumps(files, ensure_ascii=False).encode("utf-8")) > MAX_TOTAL_BYTES:
+        raise ValueError("Encoded artifact size limit exceeded")
 
 
 class _HTMLReferences(HTMLParser):
@@ -125,8 +141,8 @@ def build_project(description: str, destination: Path, *, decide) -> dict:
     """Make one bounded static-web candidate via decide(request, schema).
 
     Destination must be new, its parent must already exist, and no component
-    may be a symlink. One model call; at most three model files, 256 KiB each,
-    768 KiB total. Parent directory must be trusted against concurrent renames.
+    may be a symlink. One model call; at most three model files, 256000 bytes each,
+    600000 bytes for the JSON-encoded artifact array. Parent directory must be trusted against concurrent renames.
     Errors leave no partial destination. No shell, generated JS, or HTML runs.
     """
     if not isinstance(description, str) or not description.strip() or len(description.encode("utf-8")) > 16000:
@@ -143,20 +159,13 @@ def build_project(description: str, destination: Path, *, decide) -> dict:
         "task": "Create a static web application candidate from the user's description.",
         "description": description,
         "format": "Return index.html and optionally styles.css and app.js. Use complete HTML with html/head/body. No other files, backend, shell commands, package install, base, srcdoc or srcset. Local references must match included files. README and manifest are supplied by the host.",
+        "size_limits": {"file_utf8_bytes": MAX_FILE_BYTES,
+                        "artifact_json_utf8_bytes": MAX_TOTAL_BYTES},
         "validation_warning": "Generated code is not executed. Do not claim functional tests passed.",
     }, PROJECT_SCHEMA)
     _validate_schema(response, PROJECT_SCHEMA)
-    files = {}
-    total = 0
-    for item in response["files"]:
-        name, content = item["path"], item["content"]
-        size = len(content.encode("utf-8"))
-        if name in files or "\0" in content or size > MAX_FILE_BYTES:
-            raise ValueError("Duplicate file, NUL content, or file size limit exceeded")
-        files[name] = content
-        total += size
-    if total > MAX_TOTAL_BYTES or not files.get("index.html", "").strip():
-        raise ValueError("Total size exceeded or index.html missing/empty")
+    validate_artifact_files(response["files"])
+    files = {item["path"]: item["content"] for item in response["files"]}
     external = _references(files)
     files["README.md"] = (
         "# ASCENDRA static-web candidate\n\n"

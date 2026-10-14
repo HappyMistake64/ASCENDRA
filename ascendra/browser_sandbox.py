@@ -60,7 +60,8 @@ def build_command(project: str | Path, contract: str | Path, output: str | Path)
         runtime = node_path.parent.parent
         if runtime == Path('/') or runtime == Path('/opt'):
             raise SandboxUnavailable("Node runtime layout is not supported")
-        command += ["--ro-bind", str(runtime), str(runtime)]
+        command += ["--ro-bind", str(runtime), "/runtime"]
+        node_path = Path("/runtime") / node_path.relative_to(runtime)
     command += ["--proc", "/proc", "--dev", "/dev", "--tmpfs", "/tmp", "--dir", "/etc"]
     if Path('/etc/fonts').is_dir():
         command += ["--ro-bind", "/etc/fonts", "/etc/fonts"]
