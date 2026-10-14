@@ -15,12 +15,12 @@ def evidence(topic, **kwargs):
 
 def factory(*args, **kwargs):
     assert kwargs['max_calls'] == 1
-    assert kwargs['max_output_tokens'] == 4096
+    assert kwargs['max_output_tokens'] == 2048
     def decide(request, schema):
         return {'proposals': [{'id': str(i), 'title': 'Proposal ' + str(i),
             'description': 'Distinct implementation ' + str(i), 'benefit': 'Measured improvement',
             'estimated_effort': 'One day', 'risks': ['May regress'],
-            'acceptance_criteria': ['Independent before/after checks'],
+            'acceptance_criteria': ['Independent before/after checks', 'Zero regression in existing cases'],
             'source_urls': ['https://example.org/docs']} for i in range(3)],
             'recommended_id': '0', 'recommendation_reason': 'Smallest change'}
     return decide
@@ -51,6 +51,28 @@ class ContinuationWorkerTests(unittest.TestCase):
         self.assertFalse(result['result']['execution_started'])
         self.assertIn('model_reserved', self.queue.get(child['id'])['checkpoints'])
         self.assertIsNone(process_one(self.data, research_fn=evidence, decider_factory=factory))
+
+    def test_remaining_budget_and_concise_schema(self):
+        self.schedule()
+        captured = {}
+        def bounded_factory(*args, **kwargs):
+            captured.update(kwargs)
+            delegate = factory(*args, **kwargs)
+            def decide(request, schema):
+                self.assertIn('EXACTLY 3', request['instructions'])
+                proposals = schema['properties']['proposals']
+                self.assertEqual(proposals['maxItems'], 3)
+                fields = proposals['items']['properties']
+                self.assertEqual(fields['risks']['maxItems'], 1)
+                self.assertEqual(fields['acceptance_criteria']['maxItems'], 2)
+                self.assertEqual(fields['source_urls']['items']['enum'], ['https://example.org/docs'])
+                return delegate(request, schema)
+            return decide
+        result = process_one(self.data, research_fn=evidence, decider_factory=bounded_factory)
+        self.assertEqual(result['state'], 'completed')
+        self.assertGreater(captured['timeout_s'], 170)
+        self.assertLessEqual(captured['timeout_s'], 177)
+        self.assertEqual(result['result']['batch']['mode'], 'project')
 
     def test_failure_durable_no_retry(self):
         child = self.schedule()

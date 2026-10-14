@@ -107,7 +107,7 @@ nothing; the trusted parent must be completed with verified output. Use a dedica
 `python -m ascendra.continuation_worker --data /path/to/data --once` claims one
 child, retrieves/persists evidence and invokes actual LocalDecider with a separate
 budget of one call, 20,480 reserved tokens and 180 seconds. Research retrieval is
-bounded by the existing 45-second limit; model timeout is at most 135 seconds and
+bounded by the existing 45-second limit; model timeout uses the remaining 180-second budget minus 3 seconds and
 the remaining total budget. Completed output contains the batch and the state
 `awaiting_selection`; approval is never automatic.
 

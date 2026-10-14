@@ -1,5 +1,6 @@
 """Bounded durable post-run research, awaiting human selection; no autoapproval."""
 import argparse
+from copy import deepcopy
 from pathlib import Path
 import time
 import uuid
@@ -30,7 +31,7 @@ def schedule_after_run(queue, parent, topic, urls=None, *, enabled=False):
         raise ValueError('Invalid source URLs')
     return queue.enqueue(parent['owner_id'], parent['id'] + ':research', {
         'kind': 'post_run_research', 'parent_id': parent['id'], 'topic': topic,
-        'urls': urls, 'budget': BUDGET.copy(), 'mode': 'self_improvement'})
+        'urls': urls, 'budget': BUDGET.copy(), 'mode': 'project'})
 
 
 def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=research,
@@ -69,12 +70,32 @@ def process_one(data, *, model=DEFAULT_MODEL, owner_id=None, research_fn=researc
             return queue.finish(*identity, state='failed', result={
                 'status': 'research_failed', 'research_id': evidence['id'], 'execution_started': False})
         remaining = BUDGET['wall_seconds'] - (time.monotonic() - started)
-        if remaining < 1:
+        if remaining < 4:
             raise TimeoutError('Research wall budget exhausted')
         queue.checkpoint(*identity, 'model_reserved', {'calls': 1, 'tokens': 20480})
-        decide = decider_factory(data / 'continuations' / job['id'] / 'provider',
-            model=model, max_calls=1, timeout_s=min(remaining, 135), max_output_tokens=4096)
-        batch = generate_proposals(evidence, mode=payload['mode'], decide=decide)
+        provider = decider_factory(data / 'continuations' / job['id'] / 'provider',
+            model=model, max_calls=1, timeout_s=max(1, remaining - 3), max_output_tokens=2048)
+        def concise_decide(request, schema):
+            request, schema = deepcopy(request), deepcopy(schema)
+            request['instructions'] += (
+                ' Return EXACTLY 3 concise proposals. Use a short title, description '
+                'and benefit; exactly 1 brief risk and exactly 2 measurable acceptance '
+                'criteria per proposal. Cite 1 supplied source URL per proposal. '
+                'Keep the recommendation reason brief. Do not add prose outside JSON.')
+            proposals = schema['properties']['proposals']
+            proposals['minItems'] = proposals['maxItems'] = 3
+            fields = proposals['items']['properties']
+            for field, maximum in {'id': 24, 'title': 80, 'description': 320,
+                                   'benefit': 160, 'estimated_effort': 80}.items():
+                fields[field]['maxLength'] = maximum
+            for field, count, maximum in [('risks', 1, 160),
+                                           ('acceptance_criteria', 2, 160),
+                                           ('source_urls', 1, 2048)]:
+                fields[field]['minItems'] = fields[field]['maxItems'] = count
+                fields[field]['items']['maxLength'] = maximum
+            schema['properties']['recommendation_reason']['maxLength'] = 200
+            return provider(request, schema)
+        batch = generate_proposals(evidence, mode=payload['mode'], decide=concise_decide)
         if time.monotonic() - started > BUDGET['wall_seconds']:
             raise TimeoutError('Continuation wall budget exhausted')
         # Check fence immediately before durable publication into proposal store.
