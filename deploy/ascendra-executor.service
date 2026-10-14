@@ -1,0 +1,33 @@
+# TEMPLATE ONLY: install ASCENDRA + Node/Chromium/bwrap/Playwright under /opt first.
+# Create /etc/ascendra/executor.env if package paths/model setup differ.
+# Ollama must be separately supervised on 127.0.0.1:11434.
+# Installing this file alone does not provision a server or keep this workspace alive.
+[Unit]
+Description=ASCENDRA durable local static-web executor
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=ascendra
+WorkingDirectory=/opt/ascendra
+ExecStart=/usr/bin/python3 -m ascendra.execution_cli --data /var/lib/ascendra work
+Environment=ASCENDRA_PLAYWRIGHT_PACKAGE=/opt/ascendra/package.json
+EnvironmentFile=-/etc/ascendra/executor.env
+Restart=on-failure
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=15
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+MemoryMax=4G
+TasksMax=512
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
