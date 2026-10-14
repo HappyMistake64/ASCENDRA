@@ -31,6 +31,13 @@ def response():
 
 
 class StudioProposalTests(unittest.TestCase):
+    def test_generation_schema_only_allows_observed_source_urls(self):
+        def decide(request, schema):
+            self.assertEqual(schema['properties']['proposals']['items']['properties']['source_urls']['items']['enum'],
+                             ['https://example.org/docs'])
+            return response()
+        generate_proposals(research(), decide=decide)
+
     def test_research_completion_feeds_proposals(self):
         from ascendra.studio_research import research as fetch_research
         with patch("ascendra.studio_research._fetch", return_value=(

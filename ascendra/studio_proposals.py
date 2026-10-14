@@ -152,7 +152,11 @@ def generate_proposals(research: dict, *, mode: str = "self_improvement", decide
                               "researched_at": evidence["researched_at"],
                               "sources": clean_sources},
     }
-    result = decide(deepcopy(request), deepcopy(PROPOSAL_SCHEMA))
+    # Constrain decoding as well as validating afterwards. Small local models
+    # otherwise sometimes invent a plausible but unobserved documentation URL.
+    schema = deepcopy(PROPOSAL_SCHEMA)
+    schema['properties']['proposals']['items']['properties']['source_urls']['items']['enum'] = sorted(urls)
+    result = decide(deepcopy(request), schema)
     _bounded_json(result, 128 * 1024)
     _validate_schema(result, PROPOSAL_SCHEMA)
     result = deepcopy(result)

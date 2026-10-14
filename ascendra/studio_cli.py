@@ -14,7 +14,11 @@ def parser():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('--data', type=Path, required=True,
                      help='Persistent state directory outside any project')
-    cli.add_argument('--model', default='gpt-6-astra')
+    cli.add_argument('--provider', choices=['ollama', 'codex'], default='ollama',
+                     help='Local Ollama by default; codex explicitly uses subscription access')
+    cli.add_argument('--model', default=None,
+                     help='Default: qwen2.5-coder:7b for Ollama; gpt-6-astra for Codex')
+    cli.add_argument('--ollama-url', default='http://127.0.0.1:11434')
     commands = cli.add_subparsers(dest='command', required=True)
     propose = commands.add_parser('propose', help='Fresh web research and at least three choices')
     propose.add_argument('topic')
@@ -30,14 +34,20 @@ def parser():
     execute.add_argument('--project', type=Path)
     execute.add_argument('--allow-write', action='append', default=[])
     commands.add_parser('status')
+    commands.add_parser('doctor', help='Make one real structured readiness call')
     cancel = commands.add_parser('cancel', help='Cancel a queued job (not a live worker)')
     cancel.add_argument('job_id')
     return cli
 
 
 def _decider(args, output, max_calls, writable_paths=()):
+    if getattr(args, 'provider', 'ollama') == 'ollama':
+        from .local_llm import LocalDecider, DEFAULT_MODEL
+        return LocalDecider(output, model=args.model or DEFAULT_MODEL,
+                            endpoint=getattr(args, 'ollama_url', 'http://127.0.0.1:11434'),
+                            max_calls=max_calls)
     from .capability_cli import SubscriptionDecider
-    return SubscriptionDecider(output, model=args.model, max_calls=max_calls,
+    return SubscriptionDecider(output, model=args.model or 'gpt-6-astra', max_calls=max_calls,
                                writable_paths=writable_paths)
 
 
@@ -91,7 +101,16 @@ def main(argv=None):
     args.data = args.data.expanduser().resolve()
     args.data.mkdir(parents=True, exist_ok=True)
     store = StudioStore(args.data / 'studio.sqlite3')
-    if args.command == 'propose':
+    if args.command == 'doctor':
+        decide = _decider(args, args.data / 'preflight' / uuid.uuid4().hex, 1)
+        response = decide({'instruction': 'Connectivity check only. Return ready=true.'},
+                          {'type': 'object', 'properties': {'ready': {'type': 'boolean'}},
+                           'required': ['ready'], 'additionalProperties': False})
+        if response != {'ready': True}:
+            raise ValueError('Provider readiness response was invalid')
+        result = {'ready': True, 'provider': args.provider,
+                  'model': decide.model if args.provider == 'ollama' else args.model or 'gpt-6-astra'}
+    elif args.command == 'propose':
         from .studio_research import research
         from .studio_proposals import generate_proposals
         evidence = research(args.topic, urls=args.url or None)

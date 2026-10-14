@@ -6,8 +6,43 @@ and approval → an isolated project or self-improvement candidate.
 
 Install with `python3 -m pip install -e .`, or use
 `python3 -m ascendra.studio_cli` instead of `ascendra-studio`.
-Model operations require the existing official Codex/ChatGPT authentication and
-isolation prerequisites. No simulated model fallback is used.
+Model operations default to local Ollama with `qwen2.5-coder:7b`. No API key or
+per-token API fee is required; your machine supplies the compute. Install Ollama,
+start its local server with cloud features disabled, then pull the model:
+
+```sh
+OLLAMA_NO_CLOUD=1 OLLAMA_HOST=127.0.0.1:11434 ollama serve
+# In another terminal:
+ollama pull qwen2.5-coder:7b
+ascendra-studio --data /workspace/ascendra-studio-data doctor
+```
+
+The local model is smaller and less capable than frontier models. CPU generation
+can take minutes. Plan for roughly 5 GB of model storage plus runtime/context RAM.
+Do not launch 50 local models at once. Start with one worker and measure results.
+The local adapter accepts loopback IP addresses only, disables native tools,
+validates structured output and preserves call/token accounting. Failures consume
+budget; there is no hidden remote fallback or automatic regeneration. Large inputs
+are rejected rather than silently truncated. API fee is zero; total hardware and
+electricity costs are not measured.
+
+Use `--provider codex` before the subcommand to opt into the existing official
+Codex/ChatGPT transport explicitly. Its authentication and sandbox requirements
+still apply. `--model` overrides the model for the selected provider. This changes
+Studio only: historical benchmark constants and `ascendra-agent` defaults remain
+unchanged. No simulated model fallback is used.
+
+Local validation on 2026-10-14 used Ollama 0.40.4 and the 7B model manifest
+`dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364`:
+325 offline tests passed. A real model-generated counter app passed browser checks
+for initial zero, two increments, reset, and absence of JavaScript errors.
+A fresh MDN source produced three proposals passing the original validators.
+The first proposal attempt invented a URL and was rejected; generation was then
+constrained to observed source URLs, with a new recorded call. Four local calls
+used 6,778 reported tokens in total. No API fee was charged; hardware costs were
+not measured. These small checks do not establish general programming competence
+or semantic correctness of arbitrary research proposals. The Sites executor is
+still not connected to this local model.
 
 ```sh
 ascendra-studio --data /workspace/ascendra-studio-data propose \

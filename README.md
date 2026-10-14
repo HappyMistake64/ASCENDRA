@@ -68,6 +68,9 @@ Each worker edits its own filtered copy. Workers share an experience journal, so
 `ascendra-studio` connects fresh web evidence, at least three cited proposals,
 explicit user approval, and isolated candidate generation. State and approval
 budgets persist in SQLite. See [STUDIO.md](STUDIO.md) for commands and limitations.
+Studio defaults to local Ollama (`qwen2.5-coder:7b`), with no API key or per-token
+API fee. Use `--provider codex` explicitly for the subscription transport. Start
+the local Ollama server and install the model before running Studio's `doctor`.
 The first project format is static HTML/CSS/JS; self-improvement candidates are
 not automatically promoted. Offline tests do not establish a successful live
 model run. Studio approvals are not yet connected to the hosted observatory.
