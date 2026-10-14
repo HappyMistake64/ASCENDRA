@@ -9,6 +9,7 @@ requires-python = ">=3.11"
 [project.scripts]
 ascendra = "ascendra.cli:main"
 ascendra-agent = "ascendra.capability_cli:main"
+ascendra-studio = "ascendra.studio_cli:main"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["ascendra*"]

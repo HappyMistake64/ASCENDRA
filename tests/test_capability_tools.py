@@ -9,6 +9,19 @@ from ascendra.capability_tools import ToolCatalog
 
 
 class ProjectToolTests(unittest.TestCase):
+    def test_unexpected_success_is_valid_failing_observation(self):
+        (self.root / 'tests' / 'test_module.py').write_text(
+            'import unittest\nclass Check(unittest.TestCase):\n'
+            ' @unittest.expectedFailure\n'
+            ' def test_unexpected(self): self.assertTrue(True)\n')
+        result = self.catalog.execute('run_tests', {})
+        self.assertEqual(result['status'], 'ok', result)
+        self.assertEqual(result['data']['tests_run'], 1)
+        self.assertEqual(result['data']['failures'], 0)
+        self.assertEqual(result['data']['errors'], 0)
+        self.assertEqual(result['data']['unexpected_successes'], 1)
+        self.assertFalse(result['data']['successful'])
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)

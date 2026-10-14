@@ -63,6 +63,15 @@ ascendra-agent stop --output /absolute/path/to/new-autonomous-run
 
 Each worker edits its own filtered copy. Workers share an experience journal, so later decisions can reuse independently verified workflows. Results and diffs are retained for review; they are not automatically merged into the original project. The supervisor chooses the team size up to the configured maximum (up to 50 with `--max-agents 50`) and can finish early. Available calls are divided equally among the chosen workers, capped by `--max-steps` (default 8). With a 60-call budget, choosing 50 workers leaves only one call per worker after planning; smaller teams can investigate more deeply. This is software autonomy, not evidence of consciousness or free will. `watch` is a terminal command; it does not open a terminal inside ChatGPT.
 
+## Research and approved projects (Studio)
+
+`ascendra-studio` connects fresh web evidence, at least three cited proposals,
+explicit user approval, and isolated candidate generation. State and approval
+budgets persist in SQLite. See [STUDIO.md](STUDIO.md) for commands and limitations.
+The first project format is static HTML/CSS/JS; self-improvement candidates are
+not automatically promoted. Offline tests do not establish a successful live
+model run. Studio approvals are not yet connected to the hosted observatory.
+
 ## What is implemented
 
 - Five project tools: list, read, search, isolated unittest execution, and allowlisted atomic writes.

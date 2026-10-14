@@ -62,6 +62,7 @@ jobs:
           cd "$RUNNER_TEMP"
           "$repository/.venv/bin/ascendra" --help
           "$repository/.venv/bin/ascendra-agent" --help
+          "$repository/.venv/bin/ascendra-studio" --help
 
       - name: Upload test output
         if: always()
