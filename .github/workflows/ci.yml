@@ -40,6 +40,22 @@ jobs:
           /usr/bin/python3 --version
           bwrap --version
 
+      - name: Install pinned browser verification runtime
+        run: |
+          node --version
+          browser_runtime="$RUNNER_TEMP/ascendra-browser"
+          mkdir -p "$browser_runtime"
+          npm install --prefix "$browser_runtime" --save-exact playwright@1.64.1
+          sudo mkdir -p /usr/local/share/ascendra-browsers
+          sudo chown "$(id -u):$(id -g)" /usr/local/share/ascendra-browsers
+          export PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ascendra-browsers
+          "$browser_runtime/node_modules/.bin/playwright" install --with-deps chromium
+          export ASCENDRA_PLAYWRIGHT_PACKAGE="$browser_runtime/package.json"
+          chromium_path=$(node -e 'const {createRequire}=require("node:module"); const r=createRequire(process.env.ASCENDRA_PLAYWRIGHT_PACKAGE); process.stdout.write(r("playwright").chromium.executablePath())')
+          test -x "$chromium_path"
+          echo "ASCENDRA_PLAYWRIGHT_PACKAGE=$ASCENDRA_PLAYWRIGHT_PACKAGE" >> "$GITHUB_ENV"
+          echo "ASCENDRA_CHROMIUM=$chromium_path" >> "$GITHUB_ENV"
+
       - name: Verify that the OS sandbox really works
         run: |
           bwrap --die-with-parent --unshare-all --cap-drop ALL \
@@ -56,12 +72,19 @@ jobs:
           mkdir -p ci-results
           .venv/bin/python -m unittest discover -s tests -v 2>&1 | tee ci-results/unittest.log
 
+      - name: Run independent browser acceptance tests
+        run: node --test tests/test_browser_verify.mjs 2>&1 | tee ci-results/browser.log
+
       - name: Verify installed command entry points
         run: |
           repository="$PWD"
           cd "$RUNNER_TEMP"
           "$repository/.venv/bin/ascendra" --help
           "$repository/.venv/bin/ascendra-agent" --help
+          "$repository/.venv/bin/ascendra-studio" --help
+          "$repository/.venv/bin/ascendra-executor" --help
+          "$repository/.venv/bin/ascendra-evaluate" --help
+          "$repository/.venv/bin/ascendra-continuation" --help
 
       - name: Upload test output
         if: always()
