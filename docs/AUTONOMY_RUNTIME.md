@@ -48,3 +48,5 @@ Evaluation tooling compares immutable baseline/candidate copies with a trusted i
 - Evidence: /workspace/ascendra-autonomy-e2e and /workspace/ascendra-autonomy-*-result.json (local evidence paths, not packaged production assets).
 - Earlier offline-provider attempt failed honestly and remains in the queue history.
 - Unit suites include fixtures; they are not represented as live model or production-user runs.
+
+- Follow-up real research after the verified planned run completed: three distinct source-backed proposals, awaiting_selection. Initial 135-second timeout failed honestly; bounded concise output and using the remaining 180-second budget passed. Evidence: /workspace/ascendra-research-acceptance-v2/proposals.json.
