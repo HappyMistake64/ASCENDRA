@@ -61,7 +61,19 @@ ascendra-agent watch --output /absolute/path/to/new-autonomous-run
 ascendra-agent stop --output /absolute/path/to/new-autonomous-run
 ```
 
-Each worker edits its own filtered copy. Workers share an experience journal, so later decisions can reuse independently verified workflows. Results and diffs are retained for review; they are not automatically merged into the original project. The supervisor chooses the team size up to the configured maximum and can finish early. This is software autonomy, not evidence of consciousness or free will. `watch` is a terminal command; it does not open a terminal inside ChatGPT.
+Each worker edits its own filtered copy. Workers share an experience journal, so later decisions can reuse independently verified workflows. Results and diffs are retained for review; they are not automatically merged into the original project. The supervisor chooses the team size up to the configured maximum (up to 50 with `--max-agents 50`) and can finish early. Available calls are divided equally among the chosen workers, capped by `--max-steps` (default 8). With a 60-call budget, choosing 50 workers leaves only one call per worker after planning; smaller teams can investigate more deeply. This is software autonomy, not evidence of consciousness or free will. `watch` is a terminal command; it does not open a terminal inside ChatGPT.
+
+## Research and approved projects (Studio)
+
+`ascendra-studio` connects fresh web evidence, at least three cited proposals,
+explicit user approval, and isolated candidate generation. State and approval
+budgets persist in SQLite. See [STUDIO.md](STUDIO.md) for commands and limitations.
+Studio defaults to local Ollama (`qwen2.5-coder:7b`), with no API key or per-token
+API fee. Use `--provider codex` explicitly for the subscription transport. Start
+the local Ollama server and install the model before running Studio's `doctor`.
+The first project format is static HTML/CSS/JS; self-improvement candidates are
+not automatically promoted. Offline tests do not establish a successful live
+model run. Studio approvals are not yet connected to the hosted observatory.
 
 ## What is implemented
 
@@ -92,3 +104,5 @@ The original `ascendra demo` command is synthetic. `ascendra-agent demo` is the 
 - [Hard-task development study](METHOD_RESEARCH_HARD.md)
 
 Historical research verdicts and promotion gates are unchanged. A claim of improvement requires the corresponding registered experiment and independent evidence.
+
+Autonomous teams require `--max-calls >= 2` (one coordinator and at least one worker call). This does not change the independent executor call budget. Change evidence distinguishes absent files (`null` hash) from empty files and applies the public-file no-link policy.

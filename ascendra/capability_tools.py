@@ -76,7 +76,8 @@ with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
     suite=unittest.defaultTestLoader.discover(start_dir=sys.argv[1], pattern=sys.argv[2])
     result=unittest.TextTestRunner(stream=output, verbosity=2).run(suite)
 print(json.dumps(dict(tests_run=result.testsRun, failures=len(result.failures),
-    errors=len(result.errors), successful=result.testsRun>0 and result.wasSuccessful(),
+    errors=len(result.errors), unexpected_successes=len(result.unexpectedSuccesses),
+    successful=result.testsRun>0 and result.wasSuccessful(),
     output=output.getvalue(), output_truncated=output.truncated)))
 '''
 
@@ -292,9 +293,9 @@ class ToolCatalog:
             except (ValueError, UnicodeDecodeError) as exc:
                 raise RuntimeError('Test runner returned an invalid summary') from exc
             if (not isinstance(result, dict) or
-                any(type(result.get(k)) is not int or result[k] < 0 for k in ('tests_run', 'failures', 'errors')) or
+                any(type(result.get(k)) is not int or result[k] < 0 for k in ('tests_run', 'failures', 'errors', 'unexpected_successes')) or
                 type(result.get('successful')) is not bool or not isinstance(result.get('output'), str) or
-                result['successful'] != (result['tests_run'] > 0 and result['failures'] == 0 and result['errors'] == 0)):
+                result['successful'] != (result['tests_run'] > 0 and result['failures'] == 0 and result['errors'] == 0 and result['unexpected_successes'] == 0)):
                 raise RuntimeError('Test runner returned an invalid summary')
             return result
 
