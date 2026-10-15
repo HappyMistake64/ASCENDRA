@@ -9,7 +9,7 @@ import time
 from types import SimpleNamespace
 import unittest
 
-from ascendra.capability_autonomy import copy_public_project, run_autonomous, _history_context, _allocate_worker_steps
+from ascendra.capability_autonomy import copy_public_project, run_autonomous, _history_context, _allocate_worker_steps, _changes
 from ascendra.v4_ledger import FileLedger
 
 
@@ -205,6 +205,38 @@ class AutonomyTests(unittest.TestCase):
         for available, workers in ((49,50), (60,51), (60,0)):
             with self.assertRaises(ValueError):
                 _allocate_worker_steps(available,workers,8)
+
+    def test_one_call_budget_rejected_without_creating_run(self):
+        with self.assertRaisesRegex(ValueError, 'max_calls'):
+            run_autonomous(self.args(max_calls=1), decider_factory=FakeDecider)
+        self.assertFalse(self.output.exists())
+
+    def test_change_capture_distinguishes_missing_and_empty_files(self):
+        candidate = self.root/'candidate'
+        copy_public_project(self.project, candidate)
+        (candidate/'empty.py').touch()
+        change, = _changes(self.project, candidate, ['empty.py'])
+        self.assertIsNone(change['before_sha256'])
+        self.assertEqual(change['after_sha256'], hashlib.sha256(b'').hexdigest())
+        self.assertIn('--- /dev/null', change['patch'])
+        deleted, = _changes(candidate, self.project, ['empty.py'])
+        self.assertIsNone(deleted['after_sha256'])
+        self.assertIn('+++ /dev/null', deleted['patch'])
+        (self.project/'empty.py').touch()
+        self.assertEqual(_changes(self.project, candidate, ['empty.py']), [])
+
+    def test_change_capture_rejects_links_and_private_paths(self):
+        import os
+        candidate = self.root/'candidate'
+        copy_public_project(self.project, candidate)
+        secret = self.root/'secret'
+        secret.write_text('must not appear in findings')
+        (candidate/'linked.py').symlink_to(secret)
+        os.link(secret, candidate/'hard.py')
+        (candidate/'directory').symlink_to(self.root, target_is_directory=True)
+        for relative in ('linked.py', 'hard.py', 'directory/secret', '../secret', '.env'):
+            with self.subTest(relative=relative), self.assertRaises((ValueError, OSError)):
+                _changes(self.project, candidate, [relative])
 
     def test_output_and_write_scope_rejected_before_start(self):
         with self.assertRaises(ValueError):

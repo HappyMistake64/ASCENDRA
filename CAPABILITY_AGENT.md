@@ -140,3 +140,5 @@ Záznamy se přidávají do atomicky ukládaného žurnálu s kontrolními souč
 | `ascendra/capability_cli.py` | Příkazy `demo`, `grow`, `status`, `autonomous`, `watch` a `stop`. |
 
 Tato funkce představuje samostatný experimentální agentní režim. Není výsledkem potvrzovací studie zlepšení na nových úlohách a nemění historické výsledky ani zmrazené běhy V4/HARD.
+
+Autonomní týmy vyžadují `--max-calls >= 2` (koordinátor a alespoň jedno volání pracovníka). Samostatný executor má vlastní limity. Záznam změn rozlišuje chybějící soubor (`null` hash) od prázdného a odmítá odkazy stejně jako projektové nástroje.

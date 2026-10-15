@@ -104,3 +104,5 @@ The original `ascendra demo` command is synthetic. `ascendra-agent demo` is the 
 - [Hard-task development study](METHOD_RESEARCH_HARD.md)
 
 Historical research verdicts and promotion gates are unchanged. A claim of improvement requires the corresponding registered experiment and independent evidence.
+
+Autonomous teams require `--max-calls >= 2` (one coordinator and at least one worker call). This does not change the independent executor call budget. Change evidence distinguishes absent files (`null` hash) from empty files and applies the public-file no-link policy.

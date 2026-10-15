@@ -117,18 +117,29 @@ def _coordinator(output, config, request, limit, factory):
 
 def _changes(baseline, project, writable):
     changes = []
+    before_catalog, after_catalog = ToolCatalog(baseline), ToolCatalog(project)
+    def read_optional(catalog, relative):
+        try:
+            return catalog._read_bytes(catalog._parts(relative))
+        except FileNotFoundError:
+            return None
     for relative in writable:
-        before_path, after_path = Path(baseline)/relative, Path(project)/relative
-        before = before_path.read_bytes() if before_path.exists() else b''
-        after = after_path.read_bytes() if after_path.exists() else b''
+        before = read_optional(before_catalog, relative)
+        after = read_optional(after_catalog, relative)
         if before == after:
             continue
-        patch = ''.join(difflib.unified_diff(before.decode('utf-8', errors='replace').splitlines(True),
-            after.decode('utf-8', errors='replace').splitlines(True), fromfile='a/'+relative,
-            tofile='b/'+relative))
-        changes.append(dict(path=relative, before_sha256=hashlib.sha256(before).hexdigest(),
-            after_sha256=hashlib.sha256(after).hexdigest(), patch=patch[:12000],
-            patch_truncated=len(patch)>12000))
+        before_name = '/dev/null' if before is None else 'a/'+relative
+        after_name = '/dev/null' if after is None else 'b/'+relative
+        patch = ''.join(difflib.unified_diff((before or b'').decode('utf-8', errors='replace').splitlines(True),
+            (after or b'').decode('utf-8', errors='replace').splitlines(True), fromfile=before_name,
+            tofile=after_name))
+        if not patch:
+            # Empty file creation/deletion has no content hunk, but is still a change.
+            patch = f'--- {before_name}\n+++ {after_name}\n'
+        changes.append(dict(path=relative,
+            before_sha256=hashlib.sha256(before).hexdigest() if before is not None else None,
+            after_sha256=hashlib.sha256(after).hexdigest() if after is not None else None,
+            patch=patch[:12000], patch_truncated=len(patch)>12000))
     return changes
 
 
@@ -228,6 +239,8 @@ def run_autonomous(args, *, decider_factory=None, poll_interval=0.25):
     for key, maximum in [('max_agents', 50), ('max_calls', 10000), ('max_steps', 32)]:
         if type(config[key]) is not int or not 1 <= config[key] <= maximum:
             raise ValueError('Invalid '+key)
+    if config['max_calls'] < 2:
+        raise ValueError('max_calls must be at least 2 for coordinator and worker')
     if (type(config['minutes']) not in (float, int) or not math.isfinite(config['minutes'])
             or not 0 < config['minutes'] <= 1440):
         raise ValueError('Invalid minutes')
